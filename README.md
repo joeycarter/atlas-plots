@@ -6,6 +6,8 @@
   <br>
 </h1>
 
+![License](https://img.shields.io/github/license/joeycarter/atlas-plots)
+
 **ATLAS Plots** provides a simple interface to produce plots in ROOT following the standard ATLAS style guidelines. It uses [matplotlib](https://matplotlib.org/)-like syntax and idioms while still giving access to the underlying ROOT objects.
 
 **Behold, the simplicity of ATLAS Plots:**
