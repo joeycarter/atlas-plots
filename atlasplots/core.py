@@ -336,7 +336,7 @@ class Axes:
 
         elif isinstance(obj, root.TGraph):
             # Graph
-            obj.Draw("SAME " + options)
+            obj.Draw(options)
 
             # Expand axes to view
             old_left, old_right = self.get_xlim()
@@ -344,6 +344,27 @@ class Axes:
 
             left, right = root_helpers.graph_xmin(obj), root_helpers.graph_xmax(obj)
             bottom, top = root_helpers.graph_ymin(obj), root_helpers.graph_ymax(obj)
+
+            new_left = left if left < old_left else old_left
+            new_right = right if right > old_right else old_right
+            new_bottom = bottom if bottom < old_bottom else old_bottom
+            new_top = top if top > old_top else old_top
+
+            self.set_xlim(new_left, new_right)
+            self.set_ylim(new_bottom, new_top)
+
+            self._pad.RedrawAxis()
+
+        elif isinstance(obj, root.TMultiGraph):
+            # Multigraph
+            obj.Draw(options)
+
+            # Expand axes to view
+            old_left, old_right = self.get_xlim()
+            old_bottom, old_top = self.get_ylim()
+
+            left, right = root_helpers.multigraph_xmin(obj), root_helpers.multigraph_xmax(obj)
+            bottom, top = root_helpers.multigraph_ymin(obj), root_helpers.multigraph_ymax(obj)
 
             new_left = left if left < old_left else old_left
             new_right = right if right > old_right else old_right
@@ -528,14 +549,14 @@ class Axes:
                 "Attempting to add infinite margins; the sum of bottom and top "
                 "cannot equal 1"
             )
-        
+
         old_left, old_right = self.get_xlim()
         old_bottom, old_top = self.get_ylim()
 
         if not self._logy:
             ymin = ((1 - top) * old_bottom - bottom * old_top) / (1 - top - bottom)
             ymax = ((1 - bottom) * old_top - top * old_bottom) / (1 - top - bottom)
-        
+
         else:
             ymin = np.power(
                 10,
@@ -549,7 +570,7 @@ class Axes:
         if not self._logx:
             xmin = ((1 - right) * old_left - left * old_right) / (1 - right - left)
             xmax = ((1 - left) * old_right - right * old_left) / (1 - right - left)
-        
+
         else:
             xmin = np.power(
                 10,

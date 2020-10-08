@@ -220,22 +220,22 @@ def graph_ymax(graph):
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
             + np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEYhigh())
         )
-    
+
     elif isinstance(graph, root.TGraphErrors):
         array = (
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
             + np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEY())
         )
-    
+
     elif isinstance(graph, root.TGraph):
         array = np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
-    
+
     else:
         TypeError(
             "graph must be an instance of ROOT.TGraph, ROOT.TGraphErrors or "
             "ROOT.TGraphAsymmErrors, not {}".format(type(graph))
         )
-    
+
     return np.amax(array)
 
 
@@ -255,7 +255,7 @@ def graph_ymin(graph, only_pos=False):
     ----------
     graph : ROOT TGraph, TGraphErrors or TGraphAsymmErrors
         The ROOT graph object.
-    
+
     only_pos : bool, optional
         Only include positive values when searching for the minimum. All points
         are included by default.
@@ -273,25 +273,25 @@ def graph_ymin(graph, only_pos=False):
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
             - np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEYlow())
         )
-    
+
     elif isinstance(graph, root.TGraphErrors):
         array = (
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
             - np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEY())
         )
-    
+
     elif isinstance(graph, root.TGraph):
         array = np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetY())
-    
+
     else:
         TypeError(
             "graph must be an instance of ROOT.TGraph, ROOT.TGraphErrors or "
             "ROOT.TGraphAsymmErrors, not {}".format(type(graph))
         )
-    
+
     if only_pos:
         array = array[array > 0]
-    
+
     return np.amin(array)
 
 
@@ -322,22 +322,22 @@ def graph_xmax(graph):
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
             + np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEXhigh())
         )
-    
+
     elif isinstance(graph, root.TGraphErrors):
         array = (
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
             + np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEX())
         )
-    
+
     elif isinstance(graph, root.TGraph):
         array = np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
-    
+
     else:
         TypeError(
             "graph must be an instance of ROOT.TGraph, ROOT.TGraphErrors or "
             "ROOT.TGraphAsymmErrors, not {}".format(type(graph))
         )
-    
+
     return np.amax(array)
 
 
@@ -357,7 +357,7 @@ def graph_xmin(graph, only_pos=False):
     ----------
     graph : ROOT TGraph, TGraphErrors or TGraphAsymmErrors
         The ROOT graph object.
-    
+
     only_pos : bool, optional
         Only include positive values when searching for the minimum. All points
         are included by default.
@@ -375,26 +375,130 @@ def graph_xmin(graph, only_pos=False):
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
             - np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEXlow())
         )
-    
+
     elif isinstance(graph, root.TGraphErrors):
         array = (
             np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
             - np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetEX())
         )
-    
+
     elif isinstance(graph, root.TGraph):
         array = np.ndarray(shape=graph.GetN(), dtype='f8', buffer=graph.GetX())
-    
+
     else:
         TypeError(
             "graph must be an instance of ROOT.TGraph, ROOT.TGraphErrors or "
             "ROOT.TGraphAsymmErrors, not {}".format(type(graph))
         )
-    
+
     if only_pos:
         array = array[array > 0]
-    
+
     return np.amin(array)
+
+
+def multigraph_ymax(multigraph):
+    """Interface to `graph_ymax` if the graph is a ROOT TMultiGraph.
+
+    Parameters
+    ----------
+    multigraph : ROOT TMultiGraph
+        The ROOT multi-graph object.
+
+    Returns
+    -------
+    ymax : scalar
+        Maximum y-value of graph.
+    """
+    if not isinstance(multigraph, root.TMultiGraph):
+        raise TypeError("graph must be a ROOT.TMultiGraph, not {}".format(multigraph))
+
+    ymaxs = []
+
+    for graph in multigraph.GetListOfGraphs():
+        ymaxs.append(graph_ymax(graph))
+
+    return np.amax(ymaxs)
+
+
+def multigraph_ymin(multigraph, only_pos=False):
+    """Interface to `graph_ymin` if the graph is a ROOT TMultiGraph.
+
+    Parameters
+    ----------
+    multigraph : ROOT TMultiGraph
+        The ROOT multi-graph object.
+
+    only_pos : bool, optional
+        Only include positive values when searching for the minimum. All points
+        are included by default. See `graph_ymin`.
+
+    Returns
+    -------
+    ymin : scalar
+        Minimum y-value of graph.
+    """
+    if not isinstance(multigraph, root.TMultiGraph):
+        raise TypeError("graph must be a ROOT.TMultiGraph, not {}".format(multigraph))
+
+    ymins = []
+
+    for graph in multigraph.GetListOfGraphs():
+        ymins.append(graph_ymin(graph, only_pos))
+
+    return np.amin(ymins)
+
+
+def multigraph_xmax(multigraph):
+    """Interface to `graph_xmax` if the graph is a ROOT TMultiGraph.
+
+    Parameters
+    ----------
+    multigraph : ROOT TMultiGraph
+        The ROOT multi-graph object.
+
+    Returns
+    -------
+    xmax : scalar
+        Maximum x-value of graph.
+    """
+    if not isinstance(multigraph, root.TMultiGraph):
+        raise TypeError("graph must be a ROOT.TMultiGraph, not {}".format(multigraph))
+
+    xmaxs = []
+
+    for graph in multigraph.GetListOfGraphs():
+        xmaxs.append(graph_xmax(graph))
+
+    return np.amax(xmaxs)
+
+
+def multigraph_xmin(multigraph, only_pos=False):
+    """Interface to `graph_xmin` if the graph is a ROOT TMultiGraph.
+
+    Parameters
+    ----------
+    multigraph : ROOT TMultiGraph
+        The ROOT multi-graph object.
+
+    only_pos : bool, optional
+        Only include positive values when searching for the minimum. All points
+        are included by default. See `graph_xmin`.
+
+    Returns
+    -------
+    xmin : scalar
+        Minimum x-value of graph.
+    """
+    if not isinstance(multigraph, root.TMultiGraph):
+        raise TypeError("graph must be a ROOT.TMultiGraph, not {}".format(multigraph))
+
+    xmins = []
+
+    for graph in multigraph.GetListOfGraphs():
+        xmins.append(graph_xmin(graph, only_pos))
+
+    return np.amin(xmins)
 
 
 def hist_to_graph(hist, bin_err="none", show_bin_width=False):
@@ -470,7 +574,7 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
             x_err_up = 0.
 
         graph.SetPointError(i_bin-1, x_err_lo, x_err_up, y_err_lo, y_err_up)
-    
+
     if bin_err != "none":
         # Delete the clone of `hist`
         del tmp_hist
