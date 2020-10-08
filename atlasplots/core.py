@@ -246,6 +246,10 @@ class Axes:
         self._logy = False
         self._logx = False
 
+        # So that the TPad and TH1 objects are not lost
+        root.SetOwnership(self._pad, False)
+        root.SetOwnership(self._frame, False)
+
     @property
     def pad(self):
         """Returns the axes' TPad object.
