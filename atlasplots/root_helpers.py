@@ -415,7 +415,7 @@ def multigraph_ymax(multigraph):
 
     ymaxs = []
 
-    for graph in multigraph.GetListOfGraphs():
+    for graph in multigraph:
         ymaxs.append(graph_ymax(graph))
 
     return np.amax(ymaxs)
@@ -443,7 +443,7 @@ def multigraph_ymin(multigraph, only_pos=False):
 
     ymins = []
 
-    for graph in multigraph.GetListOfGraphs():
+    for graph in multigraph:
         ymins.append(graph_ymin(graph, only_pos))
 
     return np.amin(ymins)
@@ -467,7 +467,7 @@ def multigraph_xmax(multigraph):
 
     xmaxs = []
 
-    for graph in multigraph.GetListOfGraphs():
+    for graph in multigraph:
         xmaxs.append(graph_xmax(graph))
 
     return np.amax(xmaxs)
@@ -495,7 +495,7 @@ def multigraph_xmin(multigraph, only_pos=False):
 
     xmins = []
 
-    for graph in multigraph.GetListOfGraphs():
+    for graph in multigraph:
         xmins.append(graph_xmin(graph, only_pos))
 
     return np.amin(xmins)
