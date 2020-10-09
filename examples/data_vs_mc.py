@@ -89,7 +89,7 @@ def main():
 
     # Add the ATLAS Label
     aplt.atlas_label(text="Internal", loc="upper left")
-    ax1.text(0.2, 0.81, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22)
+    ax1.text(0.2, 0.84, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
     legend = root.TLegend(0.68, 0.65, 1, 0.90)
