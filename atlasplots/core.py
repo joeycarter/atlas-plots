@@ -484,7 +484,9 @@ class Axes:
                 else:
                     self.set_xlim(left=0.1)
 
+            self._pad.cd()
             self._pad.SetLogx(1)
+            self._pad.RedrawAxis()
             self._logx = True
 
     def set_yscale(self, value):
@@ -517,6 +519,7 @@ class Axes:
 
             self._pad.cd()
             self._pad.SetLogy(1)
+            self._pad.RedrawAxis()
             self._logy = True
 
     def add_margins(self, left=0.0, right=0.0, bottom=0.0, top=0.0):
