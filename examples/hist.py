@@ -27,8 +27,8 @@ def main():
     hist = root.TH1F("hist", "Random Histogram", 50, 0, 10)
     hist.FillRandom("sqroot", 20000)
 
-    # Fit the histogram with the original distribution; do not draw
-    hist.Fit("sqroot", "N")
+    # Fit the histogram with the original distribution; store graphics func but do not draw
+    hist.Fit("sqroot", "0")
 
     # Draw the histogram on these axes
     ax.plot(hist)

@@ -13,7 +13,7 @@ atlasplots.atlasstyle
 
 Python implementation of the ATLAS PubCom style guide for plots in ROOT:
 
-  https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PubComPlotStyle
+    https://twiki.cern.ch/twiki/bin/view/AtlasProtected/PubComPlotStyle
 
 This implementation uses ROOT fonts with precision = 3, where text sizes are
 given in pixels. Using text sizes in pixels is useful for canvases with
@@ -23,7 +23,7 @@ font 43).
 
 For general instructions on formatting text in ROOT, refer to,
 
-  https://root.cern.ch/doc/master/classTAttText.html
+    https://root.cern.ch/doc/master/classTAttText.html
 
 Examples
 --------
