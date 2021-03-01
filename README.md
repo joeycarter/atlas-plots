@@ -46,7 +46,7 @@ frame.GetXaxis().SetLimits(0, 100)
 frame.GetYaxis().SetLimits(0, 10)
 frame.Draw("AXIS")
 
-canvas.SaveAs("figure.png")
+canv.SaveAs("figure.png")
 ```
 
 ## Installing
