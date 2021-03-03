@@ -242,9 +242,14 @@ class Axes:
         self._pad.cd()
         self._frame.Draw("AXIS")  # Draw axes of `self._frame` only
         self._frame.SetBinContent(1, 1)
+        self._frame.SetMinimum(1 - 1e-10)  # Ensures ylims are not equal
 
-        self._logy = False
-        self._logx = False
+        self._logy = False  # x-axis in log-scale
+        self._logx = False  # y-axis in log-scale
+
+        # Legend and list of legend entries (for auto legend generation)
+        self._legend = None
+        self._legend_entries = []
 
         # So that the TPad and TH1 objects are not lost
         root.SetOwnership(self._pad, False)
@@ -272,7 +277,7 @@ class Axes:
         """
         self._pad.cd()
 
-    def plot(self, obj, options=""):
+    def plot(self, obj, options="", label=None, labelfmt=None, **kwargs):
         """Plot object on these axes.
 
         Note that `Axes.cd()` does *not* need to be called before `Axes.plot()`;
@@ -287,100 +292,131 @@ class Axes:
 
         options : str, optional
             Additional options to pass to ``Draw()``.
+
+        label : str, optional
+            Object label to pass to legend.
+
+        labelfmt : str, optional
+            If the `label` option is given, you can also specify the formatting
+            options passed to ``TLegend::AddEntry()``. Note that some formatting
+            options may not work if the ATLAS style settings have been applied.
+
+        **kwargs : formatting options, optional
+            `kwargs` are used to specify properties like marker, line, and fill
+            attributes. See the ROOT docs for available options:
+
+                https://root.cern.ch/doc/master/classTAttMarker.html
+                https://root.cern.ch/doc/master/classTAttLine.html
+                https://root.cern.ch/doc/master/classTAttFill.html
+
+            The kwarg syntax is the same as the equivalent ROOT attribute setter
+            function, but in all lower case and without the 'Set' prefix. For
+            example, to set the marker style, use `markerstyle=...`, which calls
+            `SetMarkerStyle(...)`.
         """
         self._pad.cd()
 
+        # Apply formatting (if any) before calling `Draw()`
+
+        # Marker attributes
+        if "markercolor" in kwargs and "markeralpha" not in kwargs:
+            obj.SetMarkerColor(kwargs["markercolor"])
+
+        if "markercolor" in kwargs and "markeralpha" in kwargs:
+            obj.SetMarkerColorAlpha(kwargs["markercolor"], kwargs["markeralpha"])
+
+        if "markersize" in kwargs:
+            obj.SetMarkerSize(kwargs["markersize"])
+
+        if "markerstyle" in kwargs:
+            obj.SetMarkerStyle(kwargs["markerstyle"])
+
+        # Line attributes
+        if "linecolor" in kwargs and "linealpha" not in kwargs:
+            obj.SetLineColor(kwargs["linecolor"])
+
+        if "linecolor" in kwargs and "linealpha" in kwargs:
+            obj.SetLineColorAlpha(kwargs["linecolor"], kwargs["linealpha"])
+
+        if "linewidth" in kwargs:
+            obj.SetLineWidth(kwargs["linewidth"])
+
+        if "linestyle" in kwargs:
+            obj.SetLineStyle(kwargs["linestyle"])
+
+        # Fill attributes
+        if "fillcolor" in kwargs and "fillalpha" not in kwargs:
+            obj.SetFillColor(kwargs["fillcolor"])
+
+        if "fillcolor" in kwargs and "fillalpha" in kwargs:
+            obj.SetFillColorAlpha(kwargs["fillcolor"], kwargs["fillalpha"])
+
+        if "fillstyle" in kwargs:
+            obj.SetFillStyle(kwargs["fillstyle"])
+
+        # Get current axis limits
+        old_left, old_right = self.get_xlim()
+        old_bottom, old_top = self.get_ylim()
+
+        # Draw the object, depending on its type
         if isinstance(obj, root.TH1):
             # Histgoram
             obj.Draw("HIST SAME " + options)
 
-            # Expand axes to view
-            old_left, old_right = self.get_xlim()
-            old_bottom, old_top = self.get_ylim()
-
+            # Get new axis limits (to expand if needed)
             left, right = obj.GetXaxis().GetXmin(), obj.GetXaxis().GetXmax()
             bottom, top = root_helpers.hist_min(obj), root_helpers.hist_max(obj)
-
-            new_left = left if left < old_left else old_left
-            new_right = right if right > old_right else old_right
-            new_bottom = bottom if bottom < old_bottom else old_bottom
-            new_top = top if top > old_top else old_top
-
-            self.set_xlim(new_left, new_right)
-            self.set_ylim(new_bottom, new_top)
-
-            self._pad.RedrawAxis()
 
         elif isinstance(obj, root.THStack):
             # Stacked Histgoram
             obj.Draw("SAME HIST" + options)
 
+            # Get new axis limits (to expand if needed)
             top_hist = obj.GetStack().Last()
-
-            # Expand axes to view
-            old_left, old_right = self.get_xlim()
-            old_bottom, old_top = self.get_ylim()
-
             left, right = top_hist.GetXaxis().GetXmin(), top_hist.GetXaxis().GetXmax()
             bottom, top = root_helpers.hist_min(top_hist), root_helpers.hist_max(top_hist)
-
-            new_left = left if left < old_left else old_left
-            new_right = right if right > old_right else old_right
-            new_bottom = bottom if bottom < old_bottom else old_bottom
-            new_top = top if top > old_top else old_top
-
-            self.set_xlim(new_left, new_right)
-            self.set_ylim(new_bottom, new_top)
-
-            self._pad.RedrawAxis()
 
         elif isinstance(obj, root.TGraph):
             # Graph
             obj.Draw(options)
 
-            # Expand axes to view
-            old_left, old_right = self.get_xlim()
-            old_bottom, old_top = self.get_ylim()
-
+            # Get new axis limits (to expand if needed)
             left, right = root_helpers.graph_xmin(obj), root_helpers.graph_xmax(obj)
             bottom, top = root_helpers.graph_ymin(obj), root_helpers.graph_ymax(obj)
-
-            new_left = left if left < old_left else old_left
-            new_right = right if right > old_right else old_right
-            new_bottom = bottom if bottom < old_bottom else old_bottom
-            new_top = top if top > old_top else old_top
-
-            self.set_xlim(new_left, new_right)
-            self.set_ylim(new_bottom, new_top)
-
-            self._pad.RedrawAxis()
 
         elif isinstance(obj, root.TMultiGraph):
             # Multigraph
             obj.Draw(options)
 
-            # Expand axes to view
-            old_left, old_right = self.get_xlim()
-            old_bottom, old_top = self.get_ylim()
-
+            # Get new axis limits (to expand if needed)
             left, right = root_helpers.multigraph_xmin(obj), root_helpers.multigraph_xmax(obj)
             bottom, top = root_helpers.multigraph_ymin(obj), root_helpers.multigraph_ymax(obj)
-
-            new_left = left if left < old_left else old_left
-            new_right = right if right > old_right else old_right
-            new_bottom = bottom if bottom < old_bottom else old_bottom
-            new_top = top if top > old_top else old_top
-
-            self.set_xlim(new_left, new_right)
-            self.set_ylim(new_bottom, new_top)
-
-            self._pad.RedrawAxis()
 
         else:
             try:
                 obj.Draw("SAME " + options)
+
+                # Do not expand axis if we don't know what we're plotting
+                left, right = old_left, old_right
+                bottom, top = old_bottom, old_top
+
             except AttributeError:
                 raise TypeError("Attempting to plot an object with no Draw() method")
+
+        # Add object to list of legend entries if label was provided
+        if label is not None:
+            self._legend_entries.append((obj, label, labelfmt))
+
+        # Adjust axis limits (expand or leave unaltered)
+        new_left = left if left < old_left else old_left
+        new_right = right if right > old_right else old_right
+        new_bottom = bottom if bottom < old_bottom else old_bottom
+        new_top = top if top > old_top else old_top
+
+        self.set_xlim(new_left, new_right)
+        self.set_ylim(new_bottom, new_top)
+
+        self._pad.RedrawAxis()
 
     def text(
         self,
@@ -787,5 +823,90 @@ class Axes:
 
         return (bottom, top)
 
-    def legend(self, entries, loc=None):
-        raise NotImplementedError("Axes.legend() is not implemented yet")
+    def legend(self, loc, options="", **kwargs):
+        """Place a legend on the Axes.
+
+        Parameters
+        ----------
+        loc : tuple
+            Legend location either as:
+
+            - (w, h): The width and height of the legend in percentage of the
+              current pad size. The position will be automatically defined at
+              painting time.
+            - (x1, y1, x2, y2): The coordinates of the legend in the current pad
+              (in normalised coordinates by default).
+
+            Unlike matplotlib, `loc` must be specified when creating the legend.
+
+        options : str, optional
+            Additional options to pass to ``TLegend::Draw()``.
+
+        **kwargs : formatting options, optional
+            `kwargs` are used to specify properties like legend line, fill, and
+            text attributes. See the ROOT docs for available options:
+
+                https://root.cern.ch/doc/master/classTLegend.html
+
+            Note that some formatting options may not work if the ATLAS style
+            settings have been applied.
+        """
+        if self._legend is not None and isinstance(self._legend, root.TLegend):
+            warnings.warn("These axes already have a legend, will overwrite", stacklevel=2)
+            self._legend.Delete()
+
+        self._legend = root.TLegend(*loc)
+
+        # Default formatting options: use transparent background
+        # Do this here since this option is not available in the `TStyle` class
+        self._legend.SetFillColorAlpha(0, 0)
+
+        # Line attributes
+        if "linecolor" in kwargs and "linealpha" not in kwargs:
+            self._legend.SetLineColor(kwargs["linecolor"])
+
+        if "linecolor" in kwargs and "linealpha" in kwargs:
+            self._legend.SetLineColorAlpha(kwargs["linecolor"], kwargs["linealpha"])
+
+        if "linewidth" in kwargs:
+            self._legend.SetLineWidth(kwargs["linewidth"])
+
+        if "linestyle" in kwargs:
+            self._legend.SetLineStyle(kwargs["linestyle"])
+
+        # Fill attributes
+        if "fillcolor" in kwargs and "fillalpha" not in kwargs:
+            self._legend.SetFillColor(kwargs["fillcolor"])
+
+        if "fillcolor" in kwargs and "fillalpha" in kwargs:
+            self._legend.SetFillColorAlpha(kwargs["fillcolor"], kwargs["fillalpha"])
+
+        if "fillstyle" in kwargs:
+            self._legend.SetFillStyle(kwargs["fillstyle"])
+
+        # Text attributes
+        if "textsize" in kwargs:
+            self._legend.SetTextSize(kwargs["textsize"])
+
+        if "textfont" in kwargs:
+            self._legend.SetTextFont(kwargs["textfont"])
+
+        if "textalign" in kwargs:
+            self._legend.SetTextAlign(kwargs["textalign"])
+
+        if "textcolor" in kwargs and "textalpha" not in kwargs:
+            self._legend.SetTextColor(kwargs["textcolor"])
+
+        if "textcolor" in kwargs and "textalpha" in kwargs:
+            self._legend.SetTextColorAlpha(kwargs["textcolor"], kwargs["textalpha"])
+
+        if "textangle" in kwargs:
+            self._legend.SetTextAngle(kwargs["textangle"])
+
+        for obj, label, option in self._legend_entries:
+            if option is not None:
+                self._legend.AddEntry(obj, label, option)
+            else:
+                self._legend.AddEntry(obj, label)
+
+        self._legend.Draw(options)
