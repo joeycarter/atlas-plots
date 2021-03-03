@@ -57,3 +57,9 @@ canv.SaveAs("figure.png")
 $ cd atlas-plots
 $ pip install [--user] -e .
 ```
+
+## Examples
+
+*For those who learn by example*
+
+Several examples of more complex plots, such as histogram fits, ratio and fit-residual panels, Data/MC plots, etc., are available under the `examples/` directory.
