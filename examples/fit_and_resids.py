@@ -32,13 +32,11 @@ def main():
     hist.Fit("sqroot", "0")
 
     # Draw the histogram on these axes
-    hist.SetLineWidth(1)
-    ax1.plot(hist, "EP")
+    ax1.plot(hist, "EP", linewidth=1, label="Random Hist", labelfmt="EP")
 
     # Draw the fit function
-    sqroot.SetLineColor(root.kRed+1)
     sqroot.SetNpx(1000)
-    ax1.plot(sqroot)
+    ax1.plot(sqroot, linecolor=root.kRed+1, label="Fit", labelfmt="L")
 
     # Draw line at y=0 in residuals panel
     line = root.TLine(ax1.get_xlim()[0], 0, ax1.get_xlim()[1], 0)
@@ -50,8 +48,7 @@ def main():
         resids.SetBinContent(i, hist.GetBinContent(i) - sqroot.Eval(hist.GetBinCenter(i)))
         resids.SetBinError(i, hist.GetBinError(i))
 
-    resids.SetLineWidth(1)
-    ax2.plot(resids, "EP")
+    ax2.plot(resids, "EP", linewidth=1)
 
     # Add extra space at top of plot to make room for labels
     ax1.add_margins(top=0.16)
@@ -72,11 +69,7 @@ def main():
     ax1.text(0.2, 0.84, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
-    legend = root.TLegend(0.65, 0.78, 0.92, 0.90)
-    legend.SetFillColorAlpha(0, 0)
-    legend.AddEntry(hist, "Random Hist", "EP")
-    legend.AddEntry(sqroot, "Fit", "L")
-    legend.Draw()
+    ax1.legend(loc=(0.65, 0.78, 0.92, 0.90))
 
     # Save the plot as a PDF
     fig.savefig("fit_and_resids.pdf")

@@ -31,12 +31,11 @@ def main():
     hist.Fit("sqroot", "0")
 
     # Draw the histogram on these axes
-    ax.plot(hist)
+    ax.plot(hist, label="Random Hist", labelfmt="F")
 
     # Draw the fit function
-    sqroot.SetLineColor(root.kRed+1)
     sqroot.SetNpx(1000)
-    ax.plot(sqroot)
+    ax.plot(sqroot, label="Fit", labelfmt="L", linecolor=root.kRed+1)
 
     # Add extra space at top of plot to make room for labels
     ax.add_margins(top=0.16)
@@ -50,11 +49,7 @@ def main():
     ax.text(0.2, 0.86, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
-    legend = root.TLegend(0.65, 0.8, 0.95, 0.92)
-    legend.SetFillColorAlpha(0, 0)
-    legend.AddEntry(hist, "Random Hist", "F")
-    legend.AddEntry(sqroot, "Fit", "L")
-    legend.Draw()
+    ax.legend(loc=(0.65, 0.8, 0.95, 0.92))
 
     # Save the plot as a PDF
     fig.savefig("hist.pdf")

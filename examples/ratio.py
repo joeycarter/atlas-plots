@@ -26,16 +26,14 @@ def main():
     # Randomly fill two histograms according to the above distribution
     hist1 = root.TH1F("hist1", "Random Histogram 1", 50, 0, 10)
     hist1.FillRandom("sqroot", 20000)
-    hist1.SetLineColor(root.kRed+1)
 
     sqroot.SetParameters(10, 4, 1.1, 20)
     hist2 = root.TH1F("hist2", "Random Histogram 2", 50, 0, 10)
     hist2.FillRandom("sqroot", 20000)
-    hist2.SetLineColor(root.kBlue+1)
 
     # Draw the histograms on these axes
-    ax1.plot(hist1)
-    ax1.plot(hist2)
+    ax1.plot(hist1, linecolor=root.kRed+1, label="Red", labelfmt="L")
+    ax1.plot(hist2, linecolor=root.kBlue+1, label="Blue", labelfmt="L")
 
     # Draw line at y=1 in ratio panel
     line = root.TLine(ax1.get_xlim()[0], 1, ax1.get_xlim()[1], 1)
@@ -44,8 +42,7 @@ def main():
     # Calculate and draw the ratio
     ratio_hist = hist1.Clone("ratio_hist")
     ratio_hist.Divide(hist2)
-    ratio_hist.SetLineColor(root.kBlack)
-    ax2.plot(ratio_hist)
+    ax2.plot(ratio_hist, linecolor=root.kBlack)
 
     # Add extra space at top of plot to make room for labels
     ax1.add_margins(top=0.16)
@@ -55,7 +52,8 @@ def main():
     ax1.set_ylabel("Events / 0.2 GeV")
     ax2.set_ylabel("Red / Blue", loc="centre")
 
-    ax2.set_ylim(0.55, 1.45)
+    # Add extra space at top and bottom of ratio panel
+    ax2.add_margins(top=0.1, bottom=0.1)
 
     # Go back to top axes to add labels
     ax1.cd()
@@ -65,11 +63,7 @@ def main():
     ax1.text(0.2, 0.84, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
-    legend = root.TLegend(0.78, 0.78, 1, 0.90)
-    legend.SetFillColorAlpha(0, 0)
-    legend.AddEntry(hist1, "Red", "L")
-    legend.AddEntry(hist2, "Blue", "L")
-    legend.Draw()
+    ax1.legend(loc=(0.78, 0.78, 1, 0.90))
 
     # Save the plot as a PDF
     fig.savefig("ratio.pdf")
