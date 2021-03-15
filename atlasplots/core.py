@@ -848,7 +848,8 @@ class Axes:
 
                 https://root.cern.ch/doc/master/classTLegend.html
 
-            Note that some formatting options may not work if the ATLAS style
+            You can also set the number of columns with the 'ncol' kwarg. Note
+            that some formatting options may not work if the ATLAS style
             settings have been applied.
         """
         if self._legend is not None and isinstance(self._legend, root.TLegend):
@@ -902,6 +903,10 @@ class Axes:
 
         if "textangle" in kwargs:
             self._legend.SetTextAngle(kwargs["textangle"])
+
+        # Columns
+        if "ncol" in kwargs:
+            self._legend.SetNColumns(kwargs["ncol"])
 
         for obj, label, option in self._legend_entries:
             if option is not None:
