@@ -5,7 +5,7 @@ atlasplots.root_helpers
 This module contains helper functions for dealing with ROOT objects, especially
 histograms and graphs.
 
-:copyright: (c) 2020 Joey Carter.
+:copyright: (c) 2020-2021 Joey Carter.
 :license: MIT, see LICENSE for more details.
 """
 
@@ -509,8 +509,9 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
     hist : ROOT TH1
         The ROOT histogram.
 
-    bin_err : str, TH1.EBinErrorOpt, optional:
+    bin_err : str, TH1.EBinErrorOpt, optional
         Type of bin error to use. Choose from the following options:
+
         - 'none': use the bin-error option already defined in `hist`. This is
           the default option.
         - 'normal' or `ROOT.TH1.EBinErrorOpt.kNormal`: errors with Normal (Wald)

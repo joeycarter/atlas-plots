@@ -4,7 +4,7 @@ atlasplots.api
 
 This module implements the ATLAS Plots API.
 
-:copyright: (c) 2020 Joey Carter.
+:copyright: (c) 2020-2021 Joey Carter.
 :license: MIT, see LICENSE for more details.
 """
 

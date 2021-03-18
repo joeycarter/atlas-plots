@@ -4,7 +4,7 @@ atlasplots.core
 
 This module contains the primary objects and methods that power ATLAS Plots.
 
-:copyright: (c) 2020 Joey Carter.
+:copyright: (c) 2020-2021 Joey Carter.
 :license: MIT, see LICENSE for more details.
 """
 
@@ -572,10 +572,6 @@ class Axes:
         y-axis limits, therefore multiple calls to ``add_margins()`` will
         incrementally add to the margin size. In most cases, ``add_margins()``
         should only be called once per axes.
-
-        FIXME
-        -----
-        This function will need to be modified to handle axes in log scale.
         """
         # Check inputs
         if left + right == 1:
@@ -773,7 +769,7 @@ class Axes:
             unchanged.
 
             The bottom and top ylims may be passed as the tuple (`bottom`,
-            `top`) as the first positional argument (or as the `bottom `keyword
+            `top`) as the first positional argument (or as the `bottom` keyword
             argument).
 
         top : scalar, optional
