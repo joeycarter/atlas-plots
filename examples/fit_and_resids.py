@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Example: Fit Histogram and Show Residuals
-=========================================
+Fit Histogram and Show Residuals
+================================
 
-This module generates and plots a random histogram, fits the original function
+This example generates and plots a random histogram, fits the original function
 to the generated distribution, and displays the fit residuals in the lower panel.
+
+.. literalinclude:: ../examples/fit_and_resids.py
+    :lines: 13-
 """
 
 import ROOT as root
 import atlasplots as aplt
-
-root.gROOT.SetBatch()
 
 
 def main():
@@ -76,4 +77,5 @@ def main():
 
 
 if __name__ == '__main__':
+    root.gROOT.SetBatch()
     main()

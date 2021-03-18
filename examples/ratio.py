@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Example: Ratio Plot
-===================
+Ratio Plot
+==========
 
-This module plots two random histograms and their ratios using the ATLAS Style.
+This example plots two random histograms and their ratios using the ATLAS Style.
+
+.. literalinclude:: ../examples/ratio.py
+    :lines: 12-
 """
 
 import ROOT as root
 import atlasplots as aplt
-
-root.gROOT.SetBatch()
 
 
 def main():
@@ -70,4 +71,5 @@ def main():
 
 
 if __name__ == '__main__':
+    root.gROOT.SetBatch()
     main()

@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Example: Random Histogram
-=========================
+Random Histogram
+================
 
-This module plots a random histogram using the ATLAS Style.
+This example plots a random histogram using the ATLAS Style.
+
+.. literalinclude:: ../examples/hist.py
+    :lines: 12-
 """
 
 import ROOT as root
 import atlasplots as aplt
-
-root.gROOT.SetBatch()
 
 
 def main():
@@ -56,4 +57,5 @@ def main():
 
 
 if __name__ == '__main__':
+    root.gROOT.SetBatch()
     main()

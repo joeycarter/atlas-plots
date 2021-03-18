@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
-Example: Data vs. MC Plot
-=========================
+Data vs. MC Plot
+================
 
-This module plots a stacked histograms representing the "signal" and
+This example plots a stacked histograms representing the "signal" and
 "backgrounds", and a graph showing the "data" superimposed. The Data/MC ratio is
 also displayed.
+
+.. literalinclude:: ../examples/data_vs_mc.py
+    :lines: 14-
 """
 
 import ROOT as root
 import atlasplots as aplt
-
-root.gROOT.SetBatch()
 
 
 def main():
@@ -105,4 +106,5 @@ def main():
 
 
 if __name__ == '__main__':
+    root.gROOT.SetBatch()
     main()
