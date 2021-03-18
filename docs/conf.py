@@ -29,7 +29,7 @@ MOCK_MODULES = ['ROOT']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 
-import atlasplots
+from atlasplots import __version__
 
 # -- Project information -----------------------------------------------------
 
@@ -61,9 +61,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # built documents.
 #
 # The short X.Y version.
-version = atlasplots.__version__
+version = __version__
 # The full version, including alpha/beta/rc tags.
-release = atlasplots.__version__
+release = __version__
 
 
 # -- Options for HTML output -------------------------------------------------
