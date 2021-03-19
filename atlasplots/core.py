@@ -319,9 +319,9 @@ class Axes:
             `kwargs` are used to specify properties like marker, line, and fill
             attributes. See the ROOT docs for available options:
 
-                https://root.cern.ch/doc/master/classTAttMarker.html
-                https://root.cern.ch/doc/master/classTAttLine.html
-                https://root.cern.ch/doc/master/classTAttFill.html
+                | https://root.cern.ch/doc/master/classTAttMarker.html
+                | https://root.cern.ch/doc/master/classTAttLine.html
+                | https://root.cern.ch/doc/master/classTAttFill.html
 
             The kwarg syntax is the same as the equivalent ROOT attribute setter
             function, but in all lower case and without the 'Set' prefix. For
@@ -857,7 +857,7 @@ class Axes:
             `kwargs` are used to specify properties like legend line, fill, and
             text attributes. See the ROOT docs for available options:
 
-                https://root.cern.ch/doc/master/classTLegend.html
+                | https://root.cern.ch/doc/master/classTLegend.html
 
             You can also set the number of columns with the 'ncol' kwarg. Note
             that some formatting options may not work if the ATLAS style
