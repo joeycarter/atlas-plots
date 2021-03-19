@@ -105,7 +105,7 @@ Basic Usage
 
     fig.savefig("figure.png")
 
-.. image:: _static/figure.png
+.. image:: _static/examples/figure.png
     :align: center
     :alt: figure.png
 

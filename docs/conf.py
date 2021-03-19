@@ -75,7 +75,7 @@ release = atlasplots.__version__
 # html_theme = 'sphinx_rtd_theme'
 html_theme = 'pydata_sphinx_theme'
 
-html_logo = "_static/logo_with_text.png"
+html_logo = "_static/logos/logo_with_text.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

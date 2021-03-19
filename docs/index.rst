@@ -9,7 +9,7 @@ Welcome to atlasplots!
 | **Version**: |version|
 | **Useful Links**: `Source Repository <https://github.com/joeycarter/atlas-plots>`_ | `Issues & Ideas <https://github.com/joeycarter/atlas-plots/issues>`_
 
-.. image:: _static/logo.png
+.. image:: _static/logos/logo.png
    :width: 200pt
    :align: center
    :alt: logo.png
