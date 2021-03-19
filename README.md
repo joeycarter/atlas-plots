@@ -7,6 +7,7 @@
 </h1>
 
 ![License](https://img.shields.io/github/license/joeycarter/atlas-plots)
+[![Documentation Status](https://readthedocs.org/projects/atlas-plots/badge/?version=latest)](https://atlas-plots.readthedocs.io/en/latest/?badge=latest)
 
 **ATLAS Plots** provides a simple interface to produce plots in [ROOT](https://root.cern/) following the standard [ATLAS](https://atlas.cern/) style guidelines. It uses [matplotlib](https://matplotlib.org/)-like syntax and idioms while still giving access to the underlying ROOT objects.
 
@@ -63,3 +64,7 @@ $ pip install [--user] -e .
 *For those who learn by example*
 
 Several examples of more complex plots, such as histogram fits, ratio and fit-residual panels, Data/MC plots, etc., are available under the `examples/` directory.
+
+## Documentation
+
+The **ATLAS Plots** documentation is available at https://atlas-plots.readthedocs.io.
