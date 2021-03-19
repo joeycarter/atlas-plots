@@ -75,7 +75,7 @@ class Figure:
             )
 
         self._canvas = root.TCanvas(name, title, figsize[0], figsize[1])
-        self._axes = np.array([Axes()])
+        self._axes = None
 
         self._canvas.Update()
 
@@ -182,6 +182,8 @@ class Figure:
 
         self._axes = axs
 
+        self._canvas.Modified()
+
         # If grid has only one column or one row, flatten the returned array
         if ncols == 1 and nrows != 1:
             axs = np.reshape(axs, (1, nrows))[0]
@@ -240,9 +242,9 @@ class Axes:
         # Draw the pad and frame
         self._pad.Draw()
         self._pad.cd()
-        self._frame.Draw("AXIS")  # Draw axes of `self._frame` only
         self._frame.SetBinContent(1, 1)
-        self._frame.SetMinimum(1 - 1e-10)  # Ensures ylims are not equal
+        self._frame.SetMinimum(1e-10)  # Ensures ylims are not equal and non-zero
+        self._frame.Draw("AXIS")  # Draw axes of `self._frame` only
 
         self._logy = False  # x-axis in log-scale
         self._logx = False  # y-axis in log-scale
@@ -315,6 +317,7 @@ class Axes:
             `SetMarkerStyle(...)`.
         """
         self._pad.cd()
+        self._pad.Update()  # Updating the pad prevents spontaneous seg faults...
 
         # Apply formatting (if any) before calling `Draw()`
 
@@ -360,7 +363,7 @@ class Axes:
 
         # Draw the object, depending on its type
         if isinstance(obj, root.TH1):
-            # Histgoram
+            # Histogram
             obj.Draw("HIST SAME " + options)
 
             # Get new axis limits (to expand if needed)
@@ -368,7 +371,7 @@ class Axes:
             bottom, top = root_helpers.hist_min(obj), root_helpers.hist_max(obj)
 
         elif isinstance(obj, root.THStack):
-            # Stacked Histgoram
+            # Stacked Histogram
             obj.Draw("SAME HIST" + options)
 
             # Get new axis limits (to expand if needed)
@@ -416,7 +419,7 @@ class Axes:
         self.set_xlim(new_left, new_right)
         self.set_ylim(new_bottom, new_top)
 
-        self._pad.RedrawAxis()
+        self._pad.RedrawAxis()  # Redraw so axes appear above colour-filled areas
 
     def text(
         self,
@@ -522,7 +525,7 @@ class Axes:
 
             self._pad.cd()
             self._pad.SetLogx(1)
-            self._pad.RedrawAxis()
+            self._pad.Modified()
             self._logx = True
 
     def set_yscale(self, value):
@@ -555,7 +558,7 @@ class Axes:
 
             self._pad.cd()
             self._pad.SetLogy(1)
-            self._pad.RedrawAxis()
+            self._pad.Modified()
             self._logy = True
 
     def add_margins(self, left=0.0, right=0.0, bottom=0.0, top=0.0):
