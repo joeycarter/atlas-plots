@@ -150,4 +150,25 @@ The example above reduces to:
 Plot Formatting
 ---------------
 
-TODO
+There are two ways to change the appearance of a ROOT graphics object, such as its marker, line and fill attributes:
+
+1. Directly modifying the ROOT object prior to the call to :meth:`Axes.plot() <.core.Axes.plot>`.
+2. In the call to :meth:`Axes.plot() <.core.Axes.plot>` itself.
+
+The first method is the traditional ROOT way of modifying graphics objects.
+For example, to plot a histogram using a red line, do:
+
+>>> hist = root.TH1F("hist", "", 64, -4, 4)
+>>> hist.SetLineColor(root.kRed)
+>>> hist.Draw()
+
+With **atlasplots**, this can be done all at once:
+
+>>> hist = root.TH1F("hist", "", 64, -4, 4)
+>>> aplt.plot(hist, linecolor=root.kRed)
+
+Consult the `Graphics attributes <https://root.cern.ch/doc/master/group__GraphicsAtt.html>`_ page in the ROOT documentation for the available attributes and options for the object you are plotting.
+The `TAttMarker <https://root.cern.ch/doc/master/classTAttMarker.html>`_, `TAttLine <https://root.cern.ch/doc/master/classTAttLine.html>`_ and `TAttFill <https://root.cern.ch/doc/master/classTAttFill.html>`_ classes should cover most use cases for 2D plots.
+
+The keyword argument syntax in :meth:`Axes.plot() <.core.Axes.plot>` is the same as the equivalent ROOT attribute setter function, but in all lower case and without the 'Set' prefix.
+For example, to set the marker style, use ``markerstyle=...``, which calls ``SetMarkerStyle(...)``.
