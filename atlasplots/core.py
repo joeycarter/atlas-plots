@@ -91,6 +91,18 @@ class Figure:
         """
         return self._axes
 
+    def add_axes(self, ax):
+        """Add axes to the figure.
+
+        Parameters
+        ----------
+        ax : `Axes`
+            The `Axes` object to add.
+        """
+        self._canvas.cd()
+        self._axes = ax
+        self._canvas.Modified()
+
     def subplots(
         self,
         nrows=1,
