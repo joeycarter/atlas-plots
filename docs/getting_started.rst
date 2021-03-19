@@ -32,11 +32,11 @@ Then you can access the ROOT C++ classes, functions, etc. via the ``ROOT`` modul
 Installing atlasplots
 ---------------------
 
-**atlasplots** is not in PyPI (yet) so for now it's best to install as editable:
+**atlasplots** is not in PyPI (yet) so for now it's best to install directly from the source repository:
 
 .. code-block:: console
 
-    $ pip install -e https://github.com/joeycarter/atlas-plots
+    $ pip install https://github.com/joeycarter/atlas-plots
 
 Replace ``https://github.com/joeycarter/atlas-plots`` with ``git@github.com:joeycarter/atlas-plots.git`` if you have GitHub ``ssh`` keys set up.
 
@@ -83,7 +83,7 @@ Finally, install **atlasplots** with:
 
 .. code-block:: console
 
-    $ pip install --user -e https://github.com/joeycarter/atlas-plots
+    $ pip install --user https://github.com/joeycarter/atlas-plots
 
 
 Basic Usage
@@ -94,19 +94,24 @@ Basic Usage
 .. code-block:: python
 
     import atlasplots as aplt
+    import ROOT as root
 
     aplt.set_atlas_style()
 
+    hist = root.TH1F("hist", "", 64, -4, 4)
+    hist.FillRandom("gaus")
+
     fig, ax = aplt.subplots(1, 1)
+
+    ax.plot(hist)
+    ax.set_ylim(0, 280)
     ax.set_xlabel("X [GeV]")
     ax.set_ylabel("Events")
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, 10)
 
-    fig.savefig("figure.png")
+    fig.savefig("figure.svg")
 
-.. image:: _static/examples/figure.png
+.. image:: _static/examples/figure.svg
     :align: center
-    :alt: figure.png
+    :alt: figure.svg
 
 For a collection of complete examples, see the :ref:`examples` section.

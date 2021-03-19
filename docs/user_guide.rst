@@ -84,8 +84,11 @@ We can then use :meth:`Axes.plot() <.core.Axes.plot>` to draw some data on the a
 >>> fig, ax = aplt.subplots()                # Create a figure containing a single axes
 >>> ax.plot(hist)                            # Plot the histogram on these axes
 
-.. image:: _static/userguide/simple_example_01.png
+.. image:: _static/userguide/simple_example_01.svg
    :align: center
+
+Don't worry that the statistics box says "Entries 1" since we will not normally display this box.
+It is due to what an :class:`~.core.Axes` object is under the hood, which is explained below.
 
 
 Figures and Axes
@@ -110,7 +113,7 @@ Instead, an :class:`~.core.Axes` object is a wrapper around a ROOT `TPad <https:
 <cppyy.gbl.TH1F object at 0x6e41640>
 
 The ROOT model of plot axes makes it inherently difficult to plot multiple datasets on the same set of axes, since it is the data object itself that must keep track of its axes, rather than the axes keeping track of the data plotted on them.
-To illustrate the problem, consider two histograms that span different ranges in *x*, plotted using plain PyROOT:
+To illustrate the problem, consider two histograms that span different ranges in *x* and *y*, plotted using plain PyROOT:
 
 >>> h1 = root.TH1F("h1", "", 20, -3, 3)
 >>> h1.SetLineColor(root.kBlue)
@@ -121,7 +124,7 @@ To illustrate the problem, consider two histograms that span different ranges in
 >>> h1.Draw()
 >>> h2.Draw("SAME")
 
-.. image:: _static/userguide/figures_and_axes_01.png
+.. image:: _static/userguide/figures_and_axes_01.svg
    :align: center
 
 Why is ``h2`` not displayed in its entirety?
@@ -139,6 +142,9 @@ The example above reduces to:
 >>> fig, ax = aplt.subplots()
 >>> ax.plot(h1)
 >>> ax.plot(h2)
+
+.. image:: _static/userguide/figures_and_axes_02.svg
+   :align: center
 
 
 Plot Formatting
