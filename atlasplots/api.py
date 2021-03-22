@@ -5,7 +5,7 @@ atlasplots.api
 This module implements the ATLAS Plots API.
 
 :copyright: (c) 2020-2021 Joey Carter.
-:license: MIT, see LICENSE for more details.
+:license: MIT, see :ref:`LICENSE <license>` for more details.
 """
 
 from . import core
@@ -63,7 +63,7 @@ def figure(name="", title="", figsize=None):
 
     Returns
     -------
-    fig : `.core.Figure`
+    fig : :class:`~.core.Figure`
         The figure.
     """
     return core.Figure(name, title, figsize)
@@ -87,13 +87,17 @@ def subplots(nrows=1, ncols=1, width_ratios=None, height_ratios=None, **fig_kw):
         relative height of ``height_ratios[i] / sum(height_ratios)``.
         If not given, all rows will have the same height.
 
+    **fig_kw
+        All additional keyword arguments are passed to the :func:`.api.figure`
+        call.
+
     Returns
     -------
-    fig : `.core.Figure`
+    fig : :class:`~.core.Figure`
         The figure.
 
-    ax : `.core.Axes` or array of Axes
-        *ax* can be either a single `Axes` object or an array of Axes objects
+    ax : :class:`~.core.Axes` or array of `Axes`
+        *ax* can be either a single `Axes` object or an array of `Axes` objects
         if more than one subplot was created.
 
         Typical idioms for handling the return value are just like in
@@ -128,12 +132,16 @@ def ratio_plot(hspace=0, **fig_kw):
     hspace : float
         Space between the main panel and ratio panel.
 
+    **fig_kw
+        All additional keyword arguments are passed to the :func:`.api.figure`
+        call.
+
     Returns
     -------
-    fig : `.core.Figure`
+    fig : :class:`~.core.Figure`
         The figure.
 
-    ax : Array of `.core.Axes`
+    ax : Array of :class:`~.core.Axes`
         The axes. The first set of axes should be the main panel, and each
         subsequent set of axes should be the ratio panels.
     """

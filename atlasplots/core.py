@@ -5,7 +5,7 @@ atlasplots.core
 This module contains the primary objects and methods that power ATLAS Plots.
 
 :copyright: (c) 2020-2021 Joey Carter.
-:license: MIT, see LICENSE for more details.
+:license: MIT, see :ref:`LICENSE <license>` for more details.
 """
 
 import random
@@ -51,21 +51,22 @@ class Figure:
     A `Figure` object is a wrapper around a ROOT TCanvas. `Figure` provides
     matplotlib-like syntax to change figure parameters while still providing
     access to the underlying ROOT objects.
+
+    Parameters
+    ----------
+    name : str, optional
+        Figure (canvas) name.
+
+    title : str, optional
+        Figure (canvas) title.
+
+    figsize : (float, float), optional
+        Figure (canvas) dimension `(width, height)` in pixels. The default
+        dimensions are (800, 600).
     """
 
     def __init__(self, name="", title="", figsize=None):
-        """
-        Parameters
-        ----------
-        name : str, optional
-            Figure (canvas) name.
-
-        title : str, optional
-            Figure (canvas) title.
-
-        figsize : (float, float), optional
-            Figure (canvas) dimension `(width, height)` in pixels. The default
-            dimensions are (800, 600).
+        """Figure constructor.
         """
         if figsize is None:
             figsize = (800, 600)
@@ -96,7 +97,7 @@ class Figure:
 
         Parameters
         ----------
-        ax : `Axes`
+        ax : :class:`~.core.Axes`
             The `Axes` object to add.
         """
         self._canvas.cd()
@@ -141,8 +142,8 @@ class Figure:
 
         Returns
         -------
-        axs : `Axes` or array of Axes.
-            Either a single `Axes` object or an array of Axes objects if more
+        axs : :class:`~.core.Axes` or array of Axes.
+            Either a single `Axes` object or an array of `Axes` objects if more
             than one subplot was created.
         """
         if width_ratios is not None and len(width_ratios) != ncols:
@@ -226,17 +227,18 @@ class Axes:
     empty TH1F histogram object). `Axes` provides matplotlib-like syntax to
     change axis parameters, like ``set_xlim()``, while still providing access to
     the underlying ROOT objects.
+
+    Parameters
+    ----------
+    pad_args : tuple, optional
+        Arguments to pass to the TPad constructor.
+
+    frame_args : tuple, optional
+        Arguments to pass to the TH1F constructor to create the frame.
     """
 
     def __init__(self, pad_args=None, frame_args=None):
-        """
-        Parameters
-        ----------
-        pad_args : tuple, optional
-            Arguments to pass to the TPad constructor.
-
-        frame_args : tuple, optional
-            Arguments to pass to the TH1F constructor to create the frame.
+        """Axes constructor.
         """
         # ROOT requires TH1s and TPads to have unique names; use random string
         rand_str = _rand_str()
@@ -284,18 +286,18 @@ class Axes:
     def cd(self):
         """Sets these axes as the current axes.
 
-        Equivalent to `ax.pad.cd()` (i.e. ``TPad::cd()``).
+        Equivalent to ``ax.pad.cd()`` (i.e. ``TPad::cd()``).
 
-        Note that `Axes.cd()` does *not* need to be called before `Axes.plot()`;
-        this is done automatically.
+        Note that ``Axes.cd()`` does *not* need to be called before
+        ``Axes.plot()``; this is done automatically.
         """
         self._pad.cd()
 
     def plot(self, obj, options="", label=None, labelfmt=None, **kwargs):
         """Plot object on these axes.
 
-        Note that `Axes.cd()` does *not* need to be called before `Axes.plot()`;
-        this is done automatically.
+        Note that ``Axes.cd()`` does *not* need to be called before
+        ``Axes.plot()``; this is done automatically.
 
         Parameters
         ----------
@@ -325,8 +327,8 @@ class Axes:
 
             The kwarg syntax is the same as the equivalent ROOT attribute setter
             function, but in all lower case and without the 'Set' prefix. For
-            example, to set the marker style, use `markerstyle=...`, which calls
-            `SetMarkerStyle(...)`.
+            example, to set the marker style, use ``markerstyle=...``, which
+            calls ``SetMarkerStyle(...)``.
         """
         self._pad.cd()
         self._pad.Update()  # Updating the pad prevents spontaneous seg faults...

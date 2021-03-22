@@ -35,7 +35,8 @@ Examples
 >>> ROOT.gPad.DrawFrame(0,0,1,1)
 >>> aplt.atlas_label(text="Internal", loc='upper left');
 
-Author: Joey Carter <joey.carter@cern.ch>
+:copyright: (c) 2020-2021 Joey Carter.
+:license: MIT, see :ref:`LICENSE <license>` for more details.
 """
 
 import ROOT as root

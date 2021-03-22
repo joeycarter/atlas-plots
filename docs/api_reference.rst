@@ -3,8 +3,7 @@
 API Reference
 =============
 
-Submodules
-----------
+This section covers all the main interfaces and objects used in **atlasplots**.
 
 atlasplots.api module
 ---------------------
@@ -34,14 +33,6 @@ atlasplots.root\_helpers module
 -------------------------------
 
 .. automodule:: atlasplots.root_helpers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: atlasplots
    :members:
    :undoc-members:
    :show-inheritance:

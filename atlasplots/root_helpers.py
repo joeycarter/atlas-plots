@@ -6,7 +6,7 @@ This module contains helper functions for dealing with ROOT objects, especially
 histograms and graphs.
 
 :copyright: (c) 2020-2021 Joey Carter.
-:license: MIT, see LICENSE for more details.
+:license: MIT, see :ref:`LICENSE <license>` for more details.
 """
 
 import ROOT as root

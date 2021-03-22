@@ -26,6 +26,7 @@ Welcome to atlasplots!
    user_guide
    api_reference
    examples
+   about
 
 ------------
 

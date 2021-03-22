@@ -16,13 +16,27 @@ the standard ATLAS style guidelines.
 
 Basic usage:
 
->>> import atlasplots as aplt
->>> aplt.set_atlas_style()
->>> fig = aplt.figure()
->>> fig.show()
+.. code-block:: python
+
+    import atlasplots as aplt
+    import ROOT as root
+
+    aplt.set_atlas_style()
+
+    hist = root.TH1F("hist", "", 64, -4, 4)
+    hist.FillRandom("gaus")
+
+    fig, ax = aplt.subplots(1, 1)
+
+    ax.plot(hist)
+    ax.set_ylim(0, 280)
+    ax.set_xlabel("X [GeV]")
+    ax.set_ylabel("Events")
+
+    fig.savefig("figure.svg")
 
 :copyright: (c) 2020-2021 Joey Carter.
-:license: MIT, see LICENSE for more details.
+:license: MIT, see :ref:`LICENSE` for more details.
 """
 
 from .__version__ import (
