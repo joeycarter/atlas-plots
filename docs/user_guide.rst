@@ -112,6 +112,10 @@ Instead, an :class:`~.core.Axes` object is a wrapper around a ROOT `TPad <https:
 >>> ax.frame
 <cppyy.gbl.TH1F object at 0x6e41640>
 
+
+Setting Axes Limits
+^^^^^^^^^^^^^^^^^^^
+
 The ROOT model of plot axes makes it inherently difficult to plot multiple datasets on the same set of axes, since it is the data object itself that must keep track of its axes, rather than the axes keeping track of the data plotted on them.
 To illustrate the problem, consider two histograms that span different ranges in *x* and *y*, plotted using plain PyROOT:
 
@@ -145,6 +149,31 @@ The example above reduces to:
 
 .. image:: _static/userguide/figures_and_axes_02.svg
    :align: center
+
+If you do not want the axes to automatically expand to the data being plotted, you can use the option ``expand=False`` in the call to :meth:`Axes.plot() <.core.Axes.plot>`:
+
+>>> ax.plot(h2, expand=False)
+
+You'll notice in the examples above that the axis limits are set exactly at the limits of the data being plotted; no additional margins are added around the data like both ROOT and matplotlib add by default.
+This is by design, since in this way the user can add the margins they want themselves.
+For example, typically when plotting a histogram you want it to extend to either end in the *x* direction, to avoid the illusion of empty bins, with a margin at the top of the plot to make room for labels and a legend.
+To do so, use the :meth:`Axes.add_margins() <.core.Axes.add_margins>` method, which allows you to independently set the left, right, top and bottom margins:
+
+>>> fig, ax = aplt.subplots()
+>>> ax.plot(h1)
+>>> ax.plot(h2)
+>>> ax.add_margins(top=0.15)
+
+.. image:: _static/userguide/figures_and_axes_03.svg
+   :align: center
+
+The :meth:`Axes.add_margins() <.core.Axes.add_margins>` method uses normalized coordinate (NDC) units, in the range [0, 1), denoting the proportion of the axes that will become whitespace after adding the margins.
+In the example above, calling ``ax.add_margins(top=0.15)`` expands the y-axis such that the top 15% of the axes is whitespace, and the data occupies the lower 85% of the axes.
+You can set the top and bottom (and left and right) margins simultaneously.
+For example, calling ``ax.add_margins(left=0.1, right=0.1)`` expands the x-axis such that the left and right 10% of the axes is whitespace, and the data occupies the middle 80% of the axes.
+Since you cannot add infinite margins, the sum of `top` and `bottom`, and of `left` and `right`, must be less than 1.
+
+You can of course set the axes limits manually just as you would in matplotlib, using the :meth:`Axes.set_xlim() <.core.Axes.set_xlim>` and :meth:`Axes.set_ylim() <.core.Axes.set_ylim>` methods.
 
 
 Plot Formatting
