@@ -267,6 +267,9 @@ class Axes:
         self._legend = None
         self._legend_entries = []
 
+        # Keep track of whether the axes are empty
+        self._is_empty = True
+
         # So that the TPad and TH1 objects are not lost
         root.SetOwnership(self._pad, False)
         root.SetOwnership(self._frame, False)
@@ -293,7 +296,7 @@ class Axes:
         """
         self._pad.cd()
 
-    def plot(self, obj, options="", label=None, labelfmt=None, **kwargs):
+    def plot(self, obj, options="", expand=True, label=None, labelfmt=None, **kwargs):
         """Plot object on these axes.
 
         Note that ``Axes.cd()`` does *not* need to be called before
@@ -308,6 +311,12 @@ class Axes:
 
         options : str, optional
             Additional options to pass to ``Draw()``.
+
+        expand : bool, optional
+            Expand the axes to the object being plotted. `True` be default. Only
+            certain objects will trigger the expansion of the axes; currently
+            these objects are ``TH1``, ``THStack``, ``TGraph``, ``TMultiGraph``,
+            ``TLine``, and their derived classes.
 
         label : str, optional
             Object label to pass to legend.
@@ -409,6 +418,14 @@ class Axes:
             left, right = root_helpers.multigraph_xmin(obj), root_helpers.multigraph_xmax(obj)
             bottom, top = root_helpers.multigraph_ymin(obj), root_helpers.multigraph_ymax(obj)
 
+        elif isinstance(obj, root.TLine):
+            # Line
+            obj.Draw(options)
+
+            # Get new axis limits (to expand if needed)
+            left, right = obj.GetX1(), obj.GetX2()
+            bottom, top = obj.GetY1(), obj.GetY2()
+
         else:
             try:
                 obj.Draw("SAME " + options)
@@ -424,16 +441,43 @@ class Axes:
         if label is not None:
             self._legend_entries.append((obj, label, labelfmt))
 
-        # Adjust axis limits (expand or leave unaltered)
-        new_left = left if left < old_left else old_left
-        new_right = right if right > old_right else old_right
-        new_bottom = bottom if bottom < old_bottom else old_bottom
-        new_top = top if top > old_top else old_top
+        # Adjust axis limits
+        if expand:
+            if self._is_empty:
+                # Axes are empty: expand or shrink to the object being drawn
+                if left == 0 and right == 0:
+                    new_left = -0.01
+                    new_right = 0.01
+                elif left == right:
+                    new_left = left * 0.99
+                    new_right = right * 1.01
+                else:
+                    new_left = left
+                    new_right = right
 
-        self.set_xlim(new_left, new_right)
-        self.set_ylim(new_bottom, new_top)
+                if bottom == 0 and top == 0:
+                    new_bottom = -0.01
+                    new_top = 0.01
+                elif bottom == top:
+                    new_bottom = bottom * 0.99
+                    new_top = top * 1.01
+                else:
+                    new_bottom = bottom
+                    new_top = top
+
+            else:
+                # Axes are not empty: expand or leave unaltered
+                new_left = left if left < old_left else old_left
+                new_right = right if right > old_right else old_right
+                new_bottom = bottom if bottom < old_bottom else old_bottom
+                new_top = top if top > old_top else old_top
+
+            self.set_xlim(new_left, new_right)
+            self.set_ylim(new_bottom, new_top)
 
         self._pad.RedrawAxis()  # Redraw so axes appear above colour-filled areas
+
+        self._is_empty = False  # Record that the axes are no longer empty
 
     def text(
         self,
