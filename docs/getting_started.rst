@@ -58,7 +58,7 @@ Installing on lxplus
 If you want to use **atlasplots** on ``lxplus`` (to avoid copying over potentially large ROOT files to your local machine), there are a few extra steps involved to install it.
 As of writing these docs, the default versions of ROOT and Python installed on ``lxplus`` should be sufficient to install **atlasplots**.
 However, if you wish to use a more complete, stable release of ROOT, Python, and a number of useful Python packages, you can use an `LCG Release <http://lcginfo.cern.ch/>`_, such as `LCG_98python3 <http://lcginfo.cern.ch/release/98python3/>`_.
-To set up the environemtn on ``lxplus``, run:
+To set up the environment on ``lxplus``, run:
 
 .. code-block:: bash
 
