@@ -581,3 +581,63 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
         del tmp_hist
 
     return graph
+
+
+def graph(x, y, xerr=None, yerr=None,):
+    """Create and a ROOT TGraph from array-like input.
+
+    Parameters
+    ----------
+    x, y : float or array-like, shape (n, )
+        The data positions.
+
+    xerr, yerr : float or array-like, shape (n, ), optional
+        Error bar sizes in the *x* and *y* directions. The default is `None`,
+        in which case no error bars are added in this direction.
+
+    Returns
+    -------
+    ROOT.TGraph or ROOT.TGraphErrors
+        TGraph object created from input arrays.
+    """
+    # Convert input arrays to flattened, double-precision, contiguous arrays
+    x = np.ravel(x).astype(np.float64, order="C", copy=False)
+    y = np.ravel(y).astype(np.float64, order="C", copy=False)
+
+    if x.size != y.size:
+        raise ValueError("x and y must be the same size")
+
+    # Process x errors
+    if xerr is not None:
+        if not np.iterable(xerr):
+            xerr = np.ones_like(x) * xerr
+
+        xerr = np.ravel(xerr).astype(np.float64, order="C", copy=False)
+
+        if xerr.size != x.size:
+            raise ValueError("xerr must be same size as x")
+
+    # Process y errors
+    if yerr is not None:
+        if not np.iterable(yerr):
+            yerr = np.ones_like(y) * yerr
+
+        yerr = np.ravel(yerr).astype(np.float64, order="C", copy=False)
+
+        if yerr.size != y.size:
+            raise ValueError("yerr must be same size as y")
+
+    # Create graph object
+    if xerr is None and yerr is None:
+        graph = root.TGraph(x.size, x, y)
+
+    elif xerr is not None and yerr is None:
+        graph = root.TGraphErrors(x.size, x, y, xerr, root.nullptr)
+
+    elif xerr is None and yerr is not None:
+        graph = root.TGraphErrors(x.size, x, y, root.nullptr, yerr)
+
+    elif xerr is not None and yerr is not None:
+        graph = root.TGraphErrors(x.size, x, y, xerr, yerr)
+
+    return graph

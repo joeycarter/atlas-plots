@@ -479,6 +479,37 @@ class Axes:
 
         self._is_empty = False  # Record that the axes are no longer empty
 
+    def graph(self, x, y, xerr=None, yerr=None, options="P", **kwargs):
+        """Create and plot a ROOT TGraph from array-like input.
+
+        The graph creation is delegated to :func:`.root_helpers.graph`.
+
+        Parameters
+        ----------
+        x, y : float or array-like, shape (n, )
+            The data positions.
+
+        xerr, yerr : float or array-like, shape (n, ), optional
+            Error bar sizes in the *x* and *y* directions. The default is `None`,
+            in which case no error bars are added in this direction.
+
+        options : str, optional
+            Additional options to pass to ``Draw()``. The default is 'P'.
+
+        **kwargs : formatting options, optional
+            Formatting options passed to :meth:`~.core.Axes.plot`.
+
+        Returns
+        -------
+        ROOT.TGraph or ROOT.TGraphErrors
+            TGraph object created from input arrays.
+        """
+        graph = root_helpers.graph(x, y, xerr, yerr)
+
+        self.plot(graph, options, **kwargs)
+
+        return graph
+
     def text(
         self,
         x,
