@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Random Histogram
-================
+Graph from Numpy Array
+======================
 
 This example plots a graph directly from numpy arrays using the ATLAS Style.
 
@@ -32,11 +32,14 @@ def main():
     # Fit the graph; store graphics func but do not draw
     graph.Fit("pol1", "0")
 
-    func = graph.GetFunction("pol1")
-    ax.plot(func, linecolor=root.kRed+1, label="Fit", labelfmt="L")
-
     # Add extra space at top of plot to make room for labels
     ax.add_margins(top=0.18, left=0.05, right=0.05, bottom=0.05)
+
+    # Plot fit function and extend its range to fill plot area
+    func = graph.GetFunction("pol1")
+    func.SetRange(*ax.get_xlim())
+    func.SetNpx(1000)
+    ax.plot(func, linecolor=root.kRed+1, expand=False, label="Fit", labelfmt="L")
 
     # Set axis titles
     ax.set_xlabel("x")
@@ -44,7 +47,6 @@ def main():
 
     # Add the ATLAS Label
     aplt.atlas_label(text="Simulation Internal", loc="upper left")
-    # ax.text(0.2, 0.86, "Poisson Distribution", size=22, align=13)
 
     # Add legend
     ax.legend(loc=(0.65, 0.8, 0.95, 0.92))

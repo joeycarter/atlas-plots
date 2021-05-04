@@ -40,3 +40,12 @@ Examples
 .. image:: _static/examples/data_vs_mc.svg
    :align: center
    :alt: data_vs_mc.svg
+
+------------
+
+.. automodule:: examples.numpy_graph
+    :members:
+
+.. image:: _static/examples/numpy_graph.svg
+   :align: center
+   :alt: numpy_graph.svg

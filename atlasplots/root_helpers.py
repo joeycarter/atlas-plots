@@ -584,7 +584,7 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
 
 
 def graph(x, y, xerr=None, yerr=None,):
-    """Create and a ROOT TGraph from array-like input.
+    """Create a ROOT TGraph from array-like input.
 
     Parameters
     ----------
