@@ -32,9 +32,9 @@ Then you can access the ROOT C++ classes, functions, etc. via the ``ROOT`` modul
 Installing atlasplots
 ---------------------
 
-```console
-$ pip install atlasplots
-```
+.. code-block:: console
+
+    $ pip install atlasplots
 
 You can also install directly from the source repository:
 
