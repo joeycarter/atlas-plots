@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://atlas.cern/"><img src="img/logo.png" alt="ATLAS Plots" width="200"></a>
+  <a href="https://atlas.cern/"><img src="https://raw.githubusercontent.com/joeycarter/atlas-plots/master/img/logo.png" alt="ATLAS Plots" width="200"></a>
   <br>
   ATLAS Plots
   <br>
@@ -8,6 +8,7 @@
 
 ![License](https://img.shields.io/github/license/joeycarter/atlas-plots)
 [![Documentation Status](https://readthedocs.org/projects/atlas-plots/badge/?version=latest)](https://atlas-plots.readthedocs.io/en/latest/?badge=latest)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/atlasplots)
 
 **ATLAS Plots** provides a simple interface to produce plots in [ROOT](https://root.cern/) following the standard [ATLAS](https://atlas.cern/) style guidelines. It uses [matplotlib](https://matplotlib.org/)-like syntax and idioms while still giving access to the underlying ROOT objects.
 
@@ -28,7 +29,7 @@ fig.savefig("figure.png")
 ```
 
 <p align="center">
-  <img src="img/figure.png" alt="Figure"/>
+  <img src="https://raw.githubusercontent.com/joeycarter/atlas-plots/master/img/figure.png" alt="Figure"/>
 </p>
 
 Compare with the equivalent PyROOT code:
