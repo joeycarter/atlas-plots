@@ -32,7 +32,11 @@ Then you can access the ROOT C++ classes, functions, etc. via the ``ROOT`` modul
 Installing atlasplots
 ---------------------
 
-**atlasplots** is not in PyPI (yet) so for now it's best to install directly from the source repository:
+```console
+$ pip install atlasplots
+```
+
+You can also install directly from the source repository:
 
 .. code-block:: console
 

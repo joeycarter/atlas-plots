@@ -52,9 +52,14 @@ canv.SaveAs("figure.png")
 
 ## Installing
 
-**ATLAS Plots** isn't in PyPI (yet) so for now it's best to clone the source and install as editable:
+```console
+$ pip install atlasplots
+```
+
+You can also install in editable mode if you need a quick-and-dirty way to make changes to the source code:
 
 ```console
+$ git clone <project-url>
 $ cd atlas-plots
 $ pip install [--user] -e .
 ```

@@ -16,11 +16,17 @@ about = {}
 with open(os.path.join(here, 'atlasplots', '__version__.py'), 'r') as f:
     exec(f.read(), about)
 
+# The text of the README file
+with open(os.path.join(here, 'README.md'), 'r') as f:
+    readme = f.read()
+
+
 setup(
     name=about['__title__'],
     version=about['__version__'],
     description=about['__description__'],
-    long_description=about['__description__'],
+    long_description=readme,
+    long_description_content_type="text/markdown",
     author=about['__author__'],
     author_email=about['__author_email__'],
     url=about['__url__'],
