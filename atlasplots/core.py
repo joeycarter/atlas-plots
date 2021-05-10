@@ -399,8 +399,9 @@ class Axes:
 
             # Get new axis limits (to expand if needed)
             top_hist = obj.GetStack().Last()
+            bottom_hist = obj.GetStack().First()
             left, right = top_hist.GetXaxis().GetXmin(), top_hist.GetXaxis().GetXmax()
-            bottom, top = root_helpers.hist_min(top_hist), root_helpers.hist_max(top_hist)
+            bottom, top = root_helpers.hist_min(bottom_hist), root_helpers.hist_max(top_hist)
 
         elif isinstance(obj, root.TGraph):
             # Graph
