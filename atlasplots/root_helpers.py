@@ -501,7 +501,7 @@ def multigraph_xmin(multigraph, only_pos=False):
     return np.amin(xmins)
 
 
-def hist_to_graph(hist, bin_err="none", show_bin_width=False):
+def hist_to_graph(hist, bin_err="none", show_bin_width=False, norm=False):
     """Convert histogram (TH1) to graph (TGraph).
 
     Parameters
@@ -530,6 +530,11 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
         If True, use graph x error bars to show bin width and place marker at
         centre of bin. The x error bars are set to 0 by default.
 
+    norm : bool, optional
+        Normalize the resulting graph such that the y value of each point is 1 and the
+        error is y_err/y. The x values and their errors remain the same. This is useful
+        for showing the relative error of a histogram in a ratio plot, for example.
+
     Returns
     -------
     ROOT TGraphAsymmErrors:
@@ -547,7 +552,11 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
     # Recall in ROOT, the first bin has index 1 (bin 0 is underflow)!
     for i_bin in range(1, tmp_hist.GetNbinsX()+1):
         N = tmp_hist.GetBinContent(i_bin)
-        graph.SetPoint(i_bin-1, tmp_hist.GetBinCenter(i_bin), N)
+
+        if not norm:
+            graph.SetPoint(i_bin-1, tmp_hist.GetBinCenter(i_bin), N)
+        else:
+            graph.SetPoint(i_bin-1, tmp_hist.GetBinCenter(i_bin), 1.)
 
         # Get errors
         if bin_err == "none":
@@ -561,8 +570,12 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False):
         else:
             raise ValueError("unknown bin error option '{}'".format(bin_err))
 
-        y_err_lo = tmp_hist.GetBinErrorLow(i_bin)
-        y_err_up = tmp_hist.GetBinErrorUp(i_bin)
+        if not norm:
+            y_err_lo = tmp_hist.GetBinErrorLow(i_bin)
+            y_err_up = tmp_hist.GetBinErrorUp(i_bin)
+        else:
+            y_err_lo = tmp_hist.GetBinErrorLow(i_bin) / N
+            y_err_up = tmp_hist.GetBinErrorUp(i_bin) / N
 
         if show_bin_width:
             # Use x error bars to show bin width
