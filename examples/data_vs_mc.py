@@ -56,6 +56,13 @@ def main():
     # Draw the stacked histogram on these axes
     ax1.plot(bkg_and_sig)
 
+    # Plot the MC stat error as a hatched band
+    err_band = aplt.root_helpers.hist_to_graph(
+        bkg_and_sig.GetStack().Last(),
+        show_bin_width=True
+    )
+    ax1.plot(err_band, "2", fillcolor=1, fillstyle=3254)
+
     # ax1.set_yscale("log")
 
     # Plot the data as a graph
@@ -68,6 +75,14 @@ def main():
     # Draw line at y=1 in ratio panel
     line = root.TLine(ax1.get_xlim()[0], 1, ax1.get_xlim()[1], 1)
     ax2.plot(line)
+
+    # Plot the relative error on the ratio axes
+    err_band_ratio = aplt.root_helpers.hist_to_graph(
+        bkg_and_sig.GetStack().Last(),
+        show_bin_width=True,
+        norm=True
+    )
+    ax2.plot(err_band_ratio, "2", fillcolor=1, fillstyle=3254)
 
     # Calculate and draw the ratio
     ratio_hist = data_hist.Clone("ratio_hist")
@@ -93,10 +108,11 @@ def main():
     ax1.text(0.2, 0.84, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
-    legend = root.TLegend(0.68, 0.65, 1, 0.90)
+    legend = root.TLegend(0.67, 0.65, 1, 0.90)
     legend.SetFillColorAlpha(0, 0)
     legend.SetTextSize(22)
     legend.AddEntry(data_graph, "Data", "EP")
+    legend.AddEntry(err_band, "MC Stat. Unc.", "F")
     legend.AddEntry(sig_hist, "Signal", "F")
     legend.AddEntry(bkg_hist, "Background", "F")
     legend.Draw()
