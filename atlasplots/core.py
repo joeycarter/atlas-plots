@@ -941,6 +941,8 @@ class Axes:
             that some formatting options may not work if the ATLAS style
             settings have been applied.
         """
+        self._pad.cd()
+
         if self._legend is not None and isinstance(self._legend, root.TLegend):
             warnings.warn("These axes already have a legend, will overwrite", stacklevel=2)
             self._legend.Delete()
