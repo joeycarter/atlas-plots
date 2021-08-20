@@ -343,42 +343,7 @@ class Axes:
         self._pad.Update()  # Updating the pad prevents spontaneous seg faults...
 
         # Apply formatting (if any) before calling `Draw()`
-
-        # Marker attributes
-        if "markercolor" in kwargs and "markeralpha" not in kwargs:
-            obj.SetMarkerColor(kwargs["markercolor"])
-
-        if "markercolor" in kwargs and "markeralpha" in kwargs:
-            obj.SetMarkerColorAlpha(kwargs["markercolor"], kwargs["markeralpha"])
-
-        if "markersize" in kwargs:
-            obj.SetMarkerSize(kwargs["markersize"])
-
-        if "markerstyle" in kwargs:
-            obj.SetMarkerStyle(kwargs["markerstyle"])
-
-        # Line attributes
-        if "linecolor" in kwargs and "linealpha" not in kwargs:
-            obj.SetLineColor(kwargs["linecolor"])
-
-        if "linecolor" in kwargs and "linealpha" in kwargs:
-            obj.SetLineColorAlpha(kwargs["linecolor"], kwargs["linealpha"])
-
-        if "linewidth" in kwargs:
-            obj.SetLineWidth(kwargs["linewidth"])
-
-        if "linestyle" in kwargs:
-            obj.SetLineStyle(kwargs["linestyle"])
-
-        # Fill attributes
-        if "fillcolor" in kwargs and "fillalpha" not in kwargs:
-            obj.SetFillColor(kwargs["fillcolor"])
-
-        if "fillcolor" in kwargs and "fillalpha" in kwargs:
-            obj.SetFillColorAlpha(kwargs["fillcolor"], kwargs["fillalpha"])
-
-        if "fillstyle" in kwargs:
-            obj.SetFillStyle(kwargs["fillstyle"])
+        root_helpers.set_graphics_attributes(obj, **kwargs)
 
         # Get current axis limits
         old_left, old_right = self.get_xlim()
@@ -953,47 +918,8 @@ class Axes:
         # Do this here since this option is not available in the `TStyle` class
         self._legend.SetFillColorAlpha(0, 0)
 
-        # Line attributes
-        if "linecolor" in kwargs and "linealpha" not in kwargs:
-            self._legend.SetLineColor(kwargs["linecolor"])
-
-        if "linecolor" in kwargs and "linealpha" in kwargs:
-            self._legend.SetLineColorAlpha(kwargs["linecolor"], kwargs["linealpha"])
-
-        if "linewidth" in kwargs:
-            self._legend.SetLineWidth(kwargs["linewidth"])
-
-        if "linestyle" in kwargs:
-            self._legend.SetLineStyle(kwargs["linestyle"])
-
-        # Fill attributes
-        if "fillcolor" in kwargs and "fillalpha" not in kwargs:
-            self._legend.SetFillColor(kwargs["fillcolor"])
-
-        if "fillcolor" in kwargs and "fillalpha" in kwargs:
-            self._legend.SetFillColorAlpha(kwargs["fillcolor"], kwargs["fillalpha"])
-
-        if "fillstyle" in kwargs:
-            self._legend.SetFillStyle(kwargs["fillstyle"])
-
-        # Text attributes
-        if "textsize" in kwargs:
-            self._legend.SetTextSize(kwargs["textsize"])
-
-        if "textfont" in kwargs:
-            self._legend.SetTextFont(kwargs["textfont"])
-
-        if "textalign" in kwargs:
-            self._legend.SetTextAlign(kwargs["textalign"])
-
-        if "textcolor" in kwargs and "textalpha" not in kwargs:
-            self._legend.SetTextColor(kwargs["textcolor"])
-
-        if "textcolor" in kwargs and "textalpha" in kwargs:
-            self._legend.SetTextColorAlpha(kwargs["textcolor"], kwargs["textalpha"])
-
-        if "textangle" in kwargs:
-            self._legend.SetTextAngle(kwargs["textangle"])
+        # Set graphics attributes
+        root_helpers.set_graphics_attributes(self._legend, **kwargs)
 
         # Columns
         if "ncol" in kwargs:

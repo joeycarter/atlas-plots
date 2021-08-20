@@ -654,3 +654,160 @@ def graph(x, y, xerr=None, yerr=None,):
         graph = root.TGraphErrors(x.size, x, y, xerr, yerr)
 
     return graph
+
+
+def set_graphics_attributes(obj, **kwargs):
+    """Set an object's graphics attributes.
+
+    Parameters
+    ----------
+    obj : ROOT TObject
+        Any ROOT object that inherits from a graphics-attribute class, currently limited
+        to TAttLine, TAttFill, TAttMarker and TAttText.
+    **kwargs : formatting options, optional
+        `kwargs` are used to specify properties like marker, line, and fill
+        attributes. See the ROOT docs for available options:
+
+            | https://root.cern.ch/doc/master/classTAttLine.html
+            | https://root.cern.ch/doc/master/classTAttFill.html
+            | https://root.cern.ch/doc/master/classTAttMarker.html
+            | https://root.cern.ch/doc/master/classTAttText.html
+
+        The kwarg syntax is the same as the equivalent ROOT attribute setter
+        function, but in all lower case and without the 'Set' prefix. For
+        example, to set the marker style, use ``markerstyle=...``, which
+        calls ``SetMarkerStyle(...)``.
+    """
+    if not isinstance(obj, root.TObject):
+        raise TypeError(f"object must be an instance of ROOT::TObject, not {type(obj)}")
+
+    # Line attributes
+    if isinstance(obj, root.TAttLine):
+        if "linecolor" in kwargs and "linealpha" not in kwargs:
+            obj.SetLineColor(get_color_code(kwargs["linecolor"]))
+
+        if "linecolor" in kwargs and "linealpha" in kwargs:
+            obj.SetLineColorAlpha(get_color_code(kwargs["linecolor"]), kwargs["linealpha"])
+
+        if "linewidth" in kwargs:
+            obj.SetLineWidth(kwargs["linewidth"])
+
+        if "linestyle" in kwargs:
+            obj.SetLineStyle(kwargs["linestyle"])
+
+    # Fill attributes
+    if isinstance(obj, root.TAttFill):
+        if "fillcolor" in kwargs and "fillalpha" not in kwargs:
+            obj.SetFillColor(get_color_code(kwargs["fillcolor"]))
+
+        if "fillcolor" in kwargs and "fillalpha" in kwargs:
+            obj.SetFillColorAlpha(get_color_code(kwargs["fillcolor"]), kwargs["fillalpha"])
+
+        if "fillstyle" in kwargs:
+            obj.SetFillStyle(kwargs["fillstyle"])
+
+    # Marker attributes
+    if isinstance(obj, root.TAttMarker):
+        if "markercolor" in kwargs and "markeralpha" not in kwargs:
+            obj.SetMarkerColor(get_color_code(kwargs["markercolor"]))
+
+        if "markercolor" in kwargs and "markeralpha" in kwargs:
+            obj.SetMarkerColorAlpha(get_color_code(kwargs["markercolor"]), kwargs["markeralpha"])
+
+        if "markersize" in kwargs:
+            obj.SetMarkerSize(kwargs["markersize"])
+
+        if "markerstyle" in kwargs:
+            obj.SetMarkerStyle(kwargs["markerstyle"])
+
+    # Text attributes
+    if isinstance(obj, root.TAttText):
+        if "textsize" in kwargs:
+            obj.SetTextSize(kwargs["textsize"])
+
+        if "textfont" in kwargs:
+            obj.SetTextFont(kwargs["textfont"])
+
+        if "textalign" in kwargs:
+            obj.SetTextAlign(kwargs["textalign"])
+
+        if "textcolor" in kwargs and "textalpha" not in kwargs:
+            obj.SetTextColor(get_color_code(kwargs["textcolor"]))
+
+        if "textcolor" in kwargs and "textalpha" in kwargs:
+            obj.SetTextColorAlpha(get_color_code(kwargs["textcolor"]), kwargs["textalpha"])
+
+        if "textangle" in kwargs:
+            obj.SetTextAngle(kwargs["textangle"])
+
+
+def get_color_code(color):
+    """Get ROOT colour code from arbitrary input.
+
+    Parameters
+    ----------
+    color : str, tuple, int
+        The input colour. Must be one of:
+          - Name of ROOT's predefined colours (str): white, black, gray, red,
+            green, blue, yellow, magenta, cyan, orange, spring, teal, azure, violet,
+            pink.
+          - Colour hex code (str beginning with '#').
+          - RGB (red, green, blue) tuple of integers in the range [0, 255] or floats in
+            the range [0, 1].
+          - ROOT colour code (int). If this is the case, `colour` is returned as is.
+    """
+    if isinstance(color, int):
+        # Already a ROOT colour code
+        return color
+
+    elif isinstance(color, str) and color[0] != "#":
+        # Predefined colour
+        c = color.lower()
+
+        if c in {"w", "white"}:
+            return root.kWhite
+        elif c in {"k", "black"}:
+            return root.kBlack
+        elif c in {"gray", "grey"}:
+            return root.kGray
+        elif c in {"r", "red"}:
+            return root.kRed
+        elif c in {"g", "green"}:
+            return root.kGreen
+        elif c in {"b", "blue"}:
+            return root.kBlue
+        elif c in {"y", "yellow"}:
+            return root.kYellow
+        elif c in {"m", "magenta"}:
+            return root.kMagenta
+        elif c in {"c", "cyan"}:
+            return root.kCyan
+        elif c in {"o", "orange"}:
+            return root.kOrange
+        elif c in {"s", "spring"}:
+            return root.kSpring
+        elif c in {"t", "teal"}:
+            return root.kTeal
+        elif c in {"a", "azure"}:
+            return root.kAzure
+        elif c in {"v", "violet"}:
+            return root.kViolet
+        elif c in {"p", "pink"}:
+            return root.kPink
+        else:
+            raise ValueError(f"unknown colour {color}")
+
+    elif isinstance(color, str) and color[0] == "#":
+        # Hex code
+        return root.TColor.GetColor(color)
+
+    elif isinstance(color, tuple) and len(color) == 3:
+        # RGB tuple
+        if (
+            all(isinstance(x, int) for x in color)
+            or all(isinstance(x, float) for x in color)
+        ):
+            return root.TColor.GetColor(*color)
+
+    else:
+        raise TypeError(f"invalid color '{color}'")
