@@ -33,7 +33,7 @@ def main():
     hist.Fit("sqroot", "0")
 
     # Draw the histogram on these axes
-    ax1.plot(hist, "EP", linewidth=1, label="Random Hist", labelfmt="EP")
+    ax1.plot(hist, "EP X0", linewidth=1, label="Random Hist", labelfmt="EP")
 
     # Draw the fit function
     sqroot.SetNpx(1000)
@@ -49,7 +49,7 @@ def main():
         resids.SetBinContent(i, hist.GetBinContent(i) - sqroot.Eval(hist.GetBinCenter(i)))
         resids.SetBinError(i, hist.GetBinError(i))
 
-    ax2.plot(resids, "EP", linewidth=1)
+    ax2.plot(resids, "EP X0", linewidth=1)
 
     # Add extra space at top of plot to make room for labels
     ax1.add_margins(top=0.16)
