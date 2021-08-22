@@ -74,10 +74,10 @@ def _setup_hist_to_array(hist):
     for hist_type in "DFISC":
         if isinstance(hist, getattr(root, f"TArray{hist_type}")):
             break
-        else:
-            raise AssertionError(
-                "hist is somehow an instance of TH[1|2|3] but not TArray[D|F|I|S|C]"
-            )
+    else:
+        raise AssertionError(
+            "hist is somehow an instance of TH[1|2|3] but not TArray[D|F|I|S|C]"
+        )
 
     # Get histogram data type
     dtype = np.dtype(DTYPE_ROOT2NUMPY[hist_type])
