@@ -566,9 +566,12 @@ def hist_to_graph(hist, bin_err="none", show_bin_width=False, norm=False):
         if not norm:
             y_err_lo = tmp_hist.GetBinErrorLow(i_bin)
             y_err_up = tmp_hist.GetBinErrorUp(i_bin)
-        else:
+        elif norm and N != 0:
             y_err_lo = tmp_hist.GetBinErrorLow(i_bin) / N
             y_err_up = tmp_hist.GetBinErrorUp(i_bin) / N
+        else:
+            y_err_lo = tmp_hist.GetBinErrorLow(i_bin)
+            y_err_up = tmp_hist.GetBinErrorUp(i_bin)
 
         if show_bin_width:
             # Use x error bars to show bin width
