@@ -811,6 +811,22 @@ class Axes:
         if left > right:
             raise ValueError("Axis limits must be in increasing order")
 
+        if right <= 0 and self._logx:
+            warnings.warn(
+                "Attempting to set non-positive right xlim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            right = self.get_xlim()[1]
+
+        elif left <= 0 and self._logx:
+            warnings.warn(
+                "Attempting to set non-positive left xlim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            left = self.get_xlim()[0]
+
         self._frame.GetXaxis().SetLimits(left, right)
 
         self._pad.Modified()  # Draw the updated axes
@@ -869,6 +885,22 @@ class Axes:
 
         if bottom > top:
             raise ValueError("Axis limits must be in increasing order")
+
+        if top <= 0 and self._logy:
+            warnings.warn(
+                "Attempting to set non-positive top ylim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            top = self.get_ylim()[1]
+
+        elif bottom <= 0 and self._logy:
+            warnings.warn(
+                "Attempting to set non-positive bottom ylim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            bottom = self.get_ylim()[0]
 
         self._frame.SetMinimum(bottom)
         self._frame.SetMaximum(top)
