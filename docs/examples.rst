@@ -49,3 +49,12 @@ Examples
 .. image:: _static/examples/numpy_graph.svg
    :align: center
    :alt: numpy_graph.svg
+
+------------
+
+.. automodule:: examples.hist2D
+    :members:
+
+.. image:: _static/examples/hist2D.svg
+   :align: center
+   :alt: hist2D.svg

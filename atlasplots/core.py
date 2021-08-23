@@ -445,6 +445,56 @@ class Axes:
 
         self._is_empty = False  # Record that the axes are no longer empty
 
+    def plot2d(self, obj, options="", label=None, labelfmt=None, **kwargs):
+        """Plot object with two independent variables on these axes.
+
+        Here, `obj` is normally a TH2 histogram, although this is not required. Unlike
+        :meth:`~.core.Axes.plot`, where an object is plotted on an already-existing
+        frame, this function takes the object itself as the axes' "frame". This is
+        always the case unless the "SAME" option is used to plot `obj`; here, the axes'
+        frame is not replaced with `obj`. If the axes' frame already exists as a TH1F
+        object (the default when an :class:`~.core.Axes` object is created), it is
+        deleted and replaced with `obj`.
+
+        See :meth:`~.core.Axes.plot` for full documentation of the other options.
+        """
+        self._pad.cd()
+        self._pad.Update()  # Updating the pad prevents spontaneous seg faults...
+
+        # Apply formatting (if any) before calling `Draw()`
+        root_helpers.set_graphics_attributes(obj, **kwargs)
+
+        # Draw the object, depending on its type
+        if isinstance(obj, root.TH2):
+            if isinstance(self._frame, root.TH1F):
+                if not self._is_empty:
+                    warnings.warn("plot2d: overwriting non-empty axes")
+
+                self._frame.Delete()
+                self._frame = obj
+
+            elif "SAME" not in options.upper():
+                self._frame = obj
+
+            obj.Draw(options)
+
+        else:
+            try:
+                warnings.warn(
+                    "plot2d: attempting to plot an object that is not a TH2.\n"
+                    "This may result in unexpected behaviour."
+                )
+                obj.Draw(options)
+
+            except AttributeError:
+                raise TypeError("Attempting to plot an object with no Draw() method")
+
+        # Add object to list of legend entries if label was provided
+        if label is not None:
+            self._legend_entries.append((obj, label, labelfmt))
+
+        self._is_empty = False  # Record that the axes are no longer empty
+
     def graph(self, x, y, xerr=None, yerr=None, options="P", **kwargs):
         """Create and plot a ROOT TGraph from array-like input.
 
@@ -616,6 +666,39 @@ class Axes:
             self._pad.Modified()
             self._logy = True
 
+    def set_zscale(self, value):
+        """
+        Set the z-axis scale.
+
+        Parameters
+        ----------
+        value : {"linear", "log"}
+            The axis scale type to apply.
+        """
+        if value in ["linear", "lin"]:
+            self._pad.SetLogz(0)
+            self._logz = False
+
+        elif value in ["log", "logy"]:
+            bottom, top = self.get_zlim()
+            if top <= 0:
+                warnings.warn(
+                    "Current frame has no positive values, and therefore cannot "
+                    "be log-scaled. Try running ax.set_zlim() first."
+                )
+            elif bottom <= 0:
+                # Arbitrarily set bottom to 0.1 (or 0.1*top if top < 0.1)
+                # so that the frame can be displayed
+                if top <= 0.1:
+                    self.set_zlim(bottom=0.1 * top)
+                else:
+                    self.set_zlim(bottom=0.1)
+
+            self._pad.cd()
+            self._pad.SetLogz(1)
+            self._pad.Modified()
+            self._logz = True
+
     def add_margins(self, left=0.0, right=0.0, bottom=0.0, top=0.0):
         """Adds margins between the axes and the data within.
 
@@ -733,6 +816,34 @@ class Axes:
 
         self._pad.Modified()  # Draw the updated axes
 
+    def get_zlabel(self):
+        """Get the zlabel text string.
+        """
+        return self._frame.GetZaxis().GetTitle()
+
+    def set_zlabel(self, zlabel, loc=None):
+        """Set the label for the z-axis.
+
+        Parameters
+        ----------
+        zlabel : str
+            The label text.
+        loc : {'center', 'top'}
+            The label position. The default is the same as ROOT's default z-axis
+            title position (top).
+        """
+        self._frame.GetZaxis().SetTitle(zlabel)
+
+        if loc in ["center", "centre"]:
+            self._frame.GetZaxis().CenterTitle()
+        elif loc is not None and loc != "top":
+            raise ValueError(
+                "'{}' is not a valid value for 'loc'; "
+                "supported values are {{'center', 'top'}}".format(loc)
+            )
+
+        self._pad.Modified()  # Draw the updated axes
+
     def get_xlim(self):
         """Returns the frame's x-axis limits.
 
@@ -751,7 +862,23 @@ class Axes:
         bottom, top : (float, float)
             The current y-axis limits in data coordinates.
         """
-        return (self._frame.GetMinimum(), self._frame.GetMaximum())
+        if isinstance(self._frame, root.TH1F):
+            return (self._frame.GetMinimum(), self._frame.GetMaximum())
+        else:
+            return (self._frame.GetYaxis().GetXmin(), self._frame.GetYaxis().GetXmax())
+
+    def get_zlim(self):
+        """Returns the frame's z-axis limits.
+
+        Returns
+        -------
+        bottom, top : (float, float)
+            The current z-axis limits in data coordinates.
+        """
+        if isinstance(self._frame, root.TH2F):
+            return (self._frame.GetMinimum(), self._frame.GetMaximum())
+        else:
+            return (self._frame.GetZaxis().GetXmin(), self._frame.GetZaxis().GetXmax())
 
     def set_xlim(self, left=None, right=None):
         """Sets the frame's x-axis limits.
@@ -901,6 +1028,62 @@ class Axes:
                 stacklevel=2,
             )
             bottom = self.get_ylim()[0]
+
+        if isinstance(self._frame, root.TH1F):
+            self._frame.SetMinimum(bottom)
+            self._frame.SetMaximum(top)
+        else:
+            self._frame.GetYaxis().SetLimits(bottom, top)
+
+        self._pad.Modified()  # Draw the updated axes
+
+        return (bottom, top)
+
+    def set_zlim(self, bottom=None, top=None):
+        """Sets the frame's z-axis limits.
+
+        See See :meth:`~.core.Axes.set_ylim` for full documentation.
+        """
+        if isinstance(self._frame, root.TH1F):
+            warnings.warn("Attempting to set z-axis limits for 2D axes")
+            return
+
+        if top is None and np.iterable(bottom):
+            bottom, top = bottom
+
+        if bottom is None or top is None:
+            old_bottom, old_top = self.get_zlim()
+            if bottom is None:
+                bottom = old_bottom
+            if top is None:
+                top = old_top
+
+        if bottom == top:
+            warnings.warn(
+                "Attempting to set identical bottom == top == {} z-axis limits".format(
+                    bottom
+                ),
+                stacklevel=2,
+            )
+
+        if bottom > top:
+            raise ValueError("Axis limits must be in increasing order")
+
+        if top <= 0 and self._logz:
+            warnings.warn(
+                "Attempting to set non-positive top zlim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            top = self.get_zlim()[1]
+
+        elif bottom <= 0 and self._logy:
+            warnings.warn(
+                "Attempting to set non-positive bottom zlim on a log-scaled axis.\n"
+                "Invalid limit will be ignored.",
+                stacklevel=2,
+            )
+            bottom = self.get_zlim()[0]
 
         self._frame.SetMinimum(bottom)
         self._frame.SetMaximum(top)
