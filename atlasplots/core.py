@@ -954,7 +954,10 @@ class Axes:
             )
             left = self.get_xlim()[0]
 
-        self._frame.GetXaxis().SetLimits(left, right)
+        if isinstance(self._frame, root.TH1F):
+            self._frame.GetXaxis().SetLimits(left, right)
+        else:
+            self._frame.GetXaxis().SetRangeUser(left, right)
 
         self._pad.Modified()  # Draw the updated axes
 
@@ -1033,7 +1036,7 @@ class Axes:
             self._frame.SetMinimum(bottom)
             self._frame.SetMaximum(top)
         else:
-            self._frame.GetYaxis().SetLimits(bottom, top)
+            self._frame.GetYaxis().SetRangeUser(bottom, top)
 
         self._pad.Modified()  # Draw the updated axes
 
