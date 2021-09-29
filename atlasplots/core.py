@@ -699,6 +699,26 @@ class Axes:
             self._pad.Modified()
             self._logz = True
 
+    def set_pad_margins(self, left=None, right=None, bottom=None, top=None):
+        """Set the pad margin between the axes and the outer edge of the pad.
+
+        Parameters
+        ----------
+        left, right, bottom, top : float, optional
+            Margin sizes in NDC units [0, 1]. The default is None (use default margin).
+        """
+        if left is not None:
+            self.pad.SetLeftMargin(left)
+
+        if right is not None:
+            self.pad.SetRightMargin(right)
+
+        if bottom is not None:
+            self.pad.SetBottomMargin(bottom)
+
+        if top is not None:
+            self.pad.SetTopMargin(top)
+
     def add_margins(self, left=0.0, right=0.0, bottom=0.0, top=0.0):
         """Adds margins between the axes and the data within.
 
@@ -765,7 +785,7 @@ class Axes:
         """
         return self._frame.GetXaxis().GetTitle()
 
-    def set_xlabel(self, xlabel, loc=None):
+    def set_xlabel(self, xlabel, loc=None, **kwargs):
         """Set the label for the x-axis.
 
         Parameters
@@ -775,6 +795,16 @@ class Axes:
         loc : {'center', 'right'}
             The label position. The default is the same as ROOT's default x-axis
             title position (right).
+        **kwargs : formatting options, optional
+            `kwargs` are used to specify the axis attributes. See the ROOT docs for
+            available options:
+
+                | https://root.cern.ch/doc/master/classTAttAxis.html
+
+            The kwarg syntax is the same as the equivalent ROOT attribute setter
+            function, but in all lower case and without the 'Set' prefix. For example,
+            to set the axis title size, use ``titlesize=...``, which calls
+            ``SetTitleSize(...)``.
         """
         self._frame.GetXaxis().SetTitle(xlabel)
 
@@ -786,6 +816,8 @@ class Axes:
                 "supported values are {{'center', 'right'}}".format(loc)
             )
 
+        root_helpers.set_axis_attributes(self._frame.GetXaxis(), **kwargs)
+
         self._pad.Modified()  # Draw the updated axes
 
     def get_ylabel(self):
@@ -793,7 +825,7 @@ class Axes:
         """
         return self._frame.GetYaxis().GetTitle()
 
-    def set_ylabel(self, ylabel, loc=None):
+    def set_ylabel(self, ylabel, loc=None, **kwargs):
         """Set the label for the y-axis.
 
         Parameters
@@ -803,6 +835,8 @@ class Axes:
         loc : {'center', 'top'}
             The label position. The default is the same as ROOT's default y-axis
             title position (top).
+        **kwargs : formatting options, optional
+            See :meth:`~.core.Axes.set_xlabel` for usage.
         """
         self._frame.GetYaxis().SetTitle(ylabel)
 
@@ -814,6 +848,8 @@ class Axes:
                 "supported values are {{'center', 'top'}}".format(loc)
             )
 
+        root_helpers.set_axis_attributes(self._frame.GetYaxis(), **kwargs)
+
         self._pad.Modified()  # Draw the updated axes
 
     def get_zlabel(self):
@@ -821,7 +857,7 @@ class Axes:
         """
         return self._frame.GetZaxis().GetTitle()
 
-    def set_zlabel(self, zlabel, loc=None):
+    def set_zlabel(self, zlabel, loc=None, **kwargs):
         """Set the label for the z-axis.
 
         Parameters
@@ -831,6 +867,8 @@ class Axes:
         loc : {'center', 'top'}
             The label position. The default is the same as ROOT's default z-axis
             title position (top).
+        **kwargs : formatting options, optional
+            See :meth:`~.core.Axes.set_xlabel` for usage.
         """
         self._frame.GetZaxis().SetTitle(zlabel)
 
@@ -841,6 +879,8 @@ class Axes:
                 "'{}' is not a valid value for 'loc'; "
                 "supported values are {{'center', 'top'}}".format(loc)
             )
+
+        root_helpers.set_axis_attributes(self._frame.GetZaxis(), **kwargs)
 
         self._pad.Modified()  # Draw the updated axes
 

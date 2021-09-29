@@ -9,6 +9,8 @@ histograms and graphs.
 :license: MIT, see :ref:`LICENSE <license>` for more details.
 """
 
+import warnings
+
 import ROOT as root
 
 import numpy as np
@@ -742,6 +744,82 @@ def set_graphics_attributes(obj, **kwargs):
 
         if "textangle" in kwargs:
             obj.SetTextAngle(kwargs["textangle"])
+
+
+def set_axis_attributes(obj, **kwargs):
+    """Set a TAxis object's attributes.
+
+    Parameters
+    ----------
+    obj : ROOT TAxis
+        A ROOT TAxis object, e.g. from ``TH1::GetXaxis()``.
+    **kwargs : formatting options, optional
+        `kwargs` are used to specify the axis attributes. See the ROOT docs for
+        available options:
+
+            | https://root.cern.ch/doc/master/classTAttAxis.html
+
+        The kwarg syntax is the same as the equivalent ROOT attribute setter function,
+        but in all lower case and without the 'Set' prefix. For example, to set the
+        axis title size, use ``titlesize=...``, which calls ``SetTitleSize(...)``.
+    """
+    # Axis attributes
+    if not isinstance(obj, root.TAttAxis):
+        warnings.warn(
+            "set_axis_attributes: object is not a TAttAxis object", stacklevel=2
+        )
+        return
+
+    if "ndivisions" in kwargs:
+        if isinstance(kwargs["ndivisions"], int):
+            obj.SetNdivisions(kwargs["ndivisions"])
+        elif len(kwargs["ndivisions"]) == 3 and all(
+            isinstance(x, int) for x in kwargs["ndivisions"]
+        ):
+            obj.SetNdivisions(*kwargs["ndivisions"])
+        else:
+            warnings.warn(
+                f"set_axis_attributes: ignoring invalid ndivisions argument '{kwargs['ndivisions']}'"
+            )
+
+    if "axiscolor" in kwargs:
+        obj.SetAxisColor(get_color_code(kwargs["axiscolor"]))
+
+    if "axiscolor" in kwargs and "axisalpha" in kwargs:
+        obj.SetAxisColor(get_color_code(kwargs["axiscolor"]), kwargs["axisalpha"])
+
+    if "labelcolor" in kwargs:
+        obj.SetLabelColor(get_color_code(kwargs["labelcolor"]))
+
+    if "labelcolor" in kwargs and "labelalpha" in kwargs:
+        obj.SetAxisColor(get_color_code(kwargs["labelcolor"]), kwargs["labelalpha"])
+
+    if "labelfont" in kwargs:
+        obj.SetLabelFont(kwargs["labelfont"])
+
+    if "labeloffset" in kwargs:
+        obj.SetLabelOffset(kwargs["labeloffset"])
+
+    if "labelsize" in kwargs:
+        obj.SetLabelSize(kwargs["labelsize"])
+
+    if "ticklength" in kwargs:
+        obj.SetTickLength(kwargs["ticklength"])
+
+    if "ticksize" in kwargs:
+        obj.SetTickSize(kwargs["ticksize"])
+
+    if "titleoffset" in kwargs:
+        obj.SetTitleOffset(kwargs["titleoffset"])
+
+    if "titlesize" in kwargs:
+        obj.SetTitleSize(kwargs["titlesize"])
+
+    if "titlecolor" in kwargs:
+        obj.SetTitleColor(get_color_code(kwargs["titlecolor"]))
+
+    if "titlefont" in kwargs:
+        obj.SetTitleFont(kwargs["titlefont"])
 
 
 def get_color_code(color):

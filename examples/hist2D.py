@@ -40,13 +40,12 @@ def main():
     ax.plot2d(hist, "COLZ")
 
     # Change pad margins to allow space for z-axis colour bar and for ATLAS label
-    ax.pad.SetRightMargin(0.18)
-    ax.pad.SetTopMargin(0.08)
+    ax.set_pad_margins(right=0.20, top=0.08)
 
     # Set axis titles
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
-    ax.set_zlabel("Events / (0.2 #times 5)")
+    ax.set_zlabel("Events / (0.2 #times 5)", titleoffset=1.2)
 
     # Add the ATLAS Label
     aplt.atlas_label(ax.pad.GetLeftMargin(), 0.97, text="Internal", align=13)
