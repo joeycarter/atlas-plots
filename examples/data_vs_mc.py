@@ -33,13 +33,13 @@ def main():
     bkg_hist = root.TH1F("bkg_hist", "Background", 50, 0, 10)
     bkg_hist.FillRandom("bkg_func", 10000)
     bkg_hist.SetFillColor(root.kRed+1)
-    bkg_hist.SetLineWidth(1)
+    bkg_hist.SetLineWidth(0)
     bkg_hist.Sumw2()
 
     sig_hist = root.TH1F("sig_hist", "Signal", 50, 0, 10)
     sig_hist.FillRandom("sig_func", 10000)
     sig_hist.SetFillColor(root.kAzure+1)
-    sig_hist.SetLineWidth(1)
+    sig_hist.SetLineWidth(0)
     sig_hist.Sumw2()
 
     data_hist = root.TH1F("data_hist", "Data", 50, 0, 10)
@@ -61,7 +61,7 @@ def main():
         bkg_and_sig.GetStack().Last(),
         show_bin_width=True
     )
-    ax1.plot(err_band, "2", fillcolor=1, fillstyle=3254)
+    ax1.plot(err_band, "2", fillcolor=1, fillstyle=3254, linewidth=0)
 
     # ax1.set_yscale("log")
 
@@ -108,14 +108,14 @@ def main():
     ax1.text(0.2, 0.84, "#sqrt{s} = 13 TeV, 139 fb^{-1}", size=22, align=13)
 
     # Add legend
-    legend = root.TLegend(0.67, 0.65, 1, 0.90)
-    legend.SetFillColorAlpha(0, 0)
-    legend.SetTextSize(22)
+    legend = ax1.legend(
+        loc=(0.68, 0.65, 1 - root.gPad.GetRightMargin() - 0.03, 1 - root.gPad.GetTopMargin() - 0.03),
+        textsize=22
+    )
     legend.AddEntry(data_graph, "Data", "EP")
-    legend.AddEntry(err_band, "MC Stat. Unc.", "F")
     legend.AddEntry(sig_hist, "Signal", "F")
     legend.AddEntry(bkg_hist, "Background", "F")
-    legend.Draw()
+    legend.AddEntry(err_band, "MC Stat. Unc.", "F")
 
     # Save the plot as a PDF
     fig.savefig("data_vs_mc.pdf")
