@@ -1160,9 +1160,10 @@ class Axes:
 
                 | https://root.cern.ch/doc/master/classTLegend.html
 
-            You can also set the number of columns with the 'ncol' kwarg. Note
-            that some formatting options may not work if the ATLAS style
-            settings have been applied.
+            You can also set the number of columns with the 'ncol' kwarg and
+            the border size with the 'bordersize' kwarg. Note that some
+            formatting options may not work if the ATLAS style settings have
+            been applied.
         """
         self._pad.cd()
 
@@ -1183,6 +1184,10 @@ class Axes:
         if "ncol" in kwargs:
             self._legend.SetNColumns(kwargs["ncol"])
 
+        # Legend border size
+        if "bordersize" in kwargs:
+            self._legend.SetBorderSize(kwargs["bordersize"])
+
         for obj, label, option in self._legend_entries:
             if option is not None:
                 self._legend.AddEntry(obj, label, option)
@@ -1190,3 +1195,5 @@ class Axes:
                 self._legend.AddEntry(obj, label)
 
         self._legend.Draw(options)
+
+        return self._legend
