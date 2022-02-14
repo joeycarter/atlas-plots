@@ -267,6 +267,10 @@ class Axes:
         self._legend = None
         self._legend_entries = []
 
+        # Save the arrows from `draw_arrows_outside_range()` so they're not
+        # deleted when moved out of scope
+        self._arrows = []
+
         # Keep track of whether the axes are empty
         self._is_empty = True
 
@@ -1235,9 +1239,6 @@ class Axes:
             `kwargs` are used to specify properties like arrow line and fill
             attributes. See :meth:`~.core.Axes.plot` for usage.
         """
-        # Save the arrows so they're not deleted when moved out of scope
-        self._arrows = []
-
         def draw_up_arrow(x, ylo, yup):
             self._pad.cd()
             arrow = root.TArrow(x, ylo, x, yup, arrowsize, option)
