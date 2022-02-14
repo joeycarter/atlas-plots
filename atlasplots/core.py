@@ -1197,3 +1197,95 @@ class Axes:
         self._legend.Draw(options)
 
         return self._legend
+
+    def draw_arrows_outside_range(
+        self, obj, arrowlength=0.12, arrowsize=0.015, buffer=0.01, option="|>", **kwargs
+    ):
+        """Draw arrows in place of data points outside the axis range.
+
+        This function plots upward-pointing arrows at the top of the axes when
+        the data point is greater than the y-axis maximum and downard-pointing
+        arrows at the bottom of the axes when the data point is less than the
+        y-axis minimum.
+
+        Some care should be taken when drawing graphs with the "0" option in
+        combination with this function, since this will draw the error bar even
+        if a point is out of range, which may overlap with the arrow.
+
+        See the ROOT documentation for more information on drawing arrows:
+
+            | https://root.cern.ch/doc/master/classTArrow.html
+
+        Parameters
+        ----------
+        obj : TH1 or TGraph
+            Data object (histogram or graph) being plotted on these axes.
+        arrowsize : float, optional
+            Size of the arrow head as in percentage of the pad height. The
+            default is 0.015.
+        arrowlength : float, optional
+            Arrow length as a fraction of the axes height. The default is 0.12.
+        buffer : float, optional
+            Buffer space between the arrow head and the axes as in fraction of
+            the axes height. The default is 0.01.
+        option : string, optional
+            String indicating the arrow head style. The default is '|>', which
+            draws an arrow in the form ---|>.
+        **kwargs : formatting options, optional
+            `kwargs` are used to specify properties like arrow line and fill
+            attributes. See :meth:`~.core.Axes.plot` for usage.
+        """
+        # Save the arrows so they're not deleted when moved out of scope
+        self._arrows = []
+
+        def draw_up_arrow(x, ylo, yup):
+            self._pad.cd()
+            arrow = root.TArrow(x, ylo, x, yup, arrowsize, option)
+            root_helpers.set_graphics_attributes(arrow, **kwargs)
+            arrow.Draw()
+            self._arrows.append(arrow)
+
+        def draw_down_arrow(x, ylo, yup):
+            self._pad.cd()
+            arrow = root.TArrow(x, yup, x, ylo, arrowsize, option)
+            root_helpers.set_graphics_attributes(arrow, **kwargs)
+            arrow.Draw()
+            self._arrows.append(arrow)
+
+        xmin, xmax = self.get_xlim()
+        ymin, ymax = self.get_ylim()
+
+        # Get arrow vertical length in data coordinates
+        length = arrowlength * (ymax - ymin)
+
+        # Buffer space between tip of arrow and axes
+        buff = buffer * (ymax - ymin)
+
+        if isinstance(obj, root.TH1):
+            for i in range(1, obj.GetNbinsX() + 1):
+                bin_center = obj.GetBinCenter(i)
+                bin_content = obj.GetBinContent(i)
+
+                if not (xmin <= bin_center <= xmax):
+                    continue
+
+                if bin_content > ymax:
+                    draw_up_arrow(bin_center, ymax - length - buff, ymax - buff)
+                elif bin_content < ymin:
+                    draw_down_arrow(bin_center, ymin + buff, ymin + length + buff)
+
+        elif isinstance(obj, root.TGraph):
+            for i in range(obj.GetN()):
+                x = obj.GetPointX(i)
+                y = obj.GetPointY(i)
+
+                if not (xmin <= x <= xmax):
+                    continue
+
+                if y > ymax:
+                    draw_up_arrow(x, ymax - length - buff, ymax - buff)
+                elif y < ymin:
+                    draw_down_arrow(x, ymin + buff, ymin + length + buff)
+
+        else:
+            raise TypeError(f"invalid data type '{type(obj)}'; must be instance of TH1 or TGraph")

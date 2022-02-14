@@ -63,7 +63,7 @@ def main():
     )
     ax1.plot(err_band, "2", fillcolor=1, fillstyle=3254, linewidth=0)
 
-    # ax1.set_yscale("log")
+    # ax1.set_yscale("log")  # uncomment to use log scale for y axis
 
     # Plot the data as a graph
     data_graph = aplt.root_helpers.hist_to_graph(data_hist)
@@ -88,7 +88,7 @@ def main():
     ratio_hist = data_hist.Clone("ratio_hist")
     ratio_hist.Divide(bkg_and_sig.GetStack().Last())
     ratio_graph = aplt.root_helpers.hist_to_graph(ratio_hist)
-    ax2.plot(ratio_graph, "P")
+    ax2.plot(ratio_graph, "P0")
 
     # Add extra space at top of plot to make room for labels
     ax1.add_margins(top=0.16)
@@ -98,7 +98,8 @@ def main():
     ax1.set_ylabel("Events / 0.2 GeV")
     ax2.set_ylabel("Data / Pred.", loc="centre")
 
-    ax2.set_ylim(0.55, 1.45)
+    ax2.set_ylim(0.75, 1.25)
+    ax2.draw_arrows_outside_range(ratio_graph)
 
     # Go back to top axes to add labels
     ax1.cd()
