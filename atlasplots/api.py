@@ -211,10 +211,10 @@ def atlas_label(
         is supported.
 
     loc : str, optional
-        The location of the legend.
+        The location of the ATLAS label.
 
         The strings 'upper left', 'upper right', 'lower left', 'lower right'
-        place the legend at the corresponding corner of the axes/figure. This
+        place the label at the corresponding corner of the axes/figure. This
         option is overridden if the `x` and `y` arguments are provided.
 
         The default location is 'upper left'.
