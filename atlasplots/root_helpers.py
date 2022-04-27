@@ -803,6 +803,9 @@ def set_axis_attributes(obj, **kwargs):
     if "labelsize" in kwargs:
         obj.SetLabelSize(kwargs["labelsize"])
 
+    if "maxdigits" in kwargs:
+        obj.SetMaxDigits(kwargs["maxdigits"])
+
     if "ticklength" in kwargs:
         obj.SetTickLength(kwargs["ticklength"])
 
