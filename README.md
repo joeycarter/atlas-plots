@@ -10,6 +10,12 @@
 [![Documentation Status](https://readthedocs.org/projects/atlas-plots/badge/?version=latest)](https://atlas-plots.readthedocs.io/en/latest/?badge=latest)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/atlasplots)
 
+---
+
+:warning: **I am no longer actively maintaining ATLAS Plots.** If you find a bug, please feel free to open an issue or a pull request and I will get to it as soon as I can. Thank you for your continued interest!
+
+---
+
 **ATLAS Plots** provides a simple interface to produce plots in [ROOT](https://root.cern/) following the standard [ATLAS](https://atlas.cern/) style guidelines. It uses [matplotlib](https://matplotlib.org/)-like syntax and idioms while still giving access to the underlying ROOT objects.
 
 **Behold, the simplicity of ATLAS Plots:**
