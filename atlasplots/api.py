@@ -162,7 +162,7 @@ def ratio_plot(hspace=0, **fig_kw):
 
     ax1.frame.GetYaxis().SetTitleOffset(1.9)
     ax2.frame.GetYaxis().SetTitleOffset(1.9)
-    ax2.frame.GetXaxis().SetTitleOffset(1.4 / 0.37)
+    ax2.frame.GetXaxis().SetTitleOffset(0)
     ax2.frame.GetYaxis().SetNdivisions(505)
 
     return fig, (ax1, ax2)
