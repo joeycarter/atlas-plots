@@ -34,7 +34,7 @@ setup(
     package_data={'': ['LICENSE', 'NOTICE'], 'atlasplots': ['*.pem']},
     package_dir={'atlasplots': 'atlasplots'},
     include_package_data=True,
-    python_requires=">=3.6.*",
+    python_requires=">=3.6",
     install_requires=requires,
     license=about['__license__'],
     zip_safe=False,
